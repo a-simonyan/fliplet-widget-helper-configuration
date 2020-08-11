@@ -12,3 +12,12 @@
   align-items: center;
   justify-content: center;
 }
+
+.form-group {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #DDD;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}

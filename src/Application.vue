@@ -12,8 +12,10 @@
 
 <script>
 import Text from './components/Text';
+import Html from './components/Html';
 
 Vue.component('flText', Text);
+Vue.component('flHtml', Html);
 
 export default {
   data() {
