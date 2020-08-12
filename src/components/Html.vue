@@ -14,7 +14,14 @@ export default {
     'label',
     'html',
     'value',
+    'init',
     'description'
-  ]
+  ],
+  mounted() {
+    if (this.init) {
+      const init = new Function(this.init)();
+      init.call(this, this.$el);
+    }
+  }
 };
 </script>
