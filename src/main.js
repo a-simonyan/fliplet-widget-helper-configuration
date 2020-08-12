@@ -1,3 +1,5 @@
+import Application from './Application.vue';
+
 // Sample data
 if (Fliplet.Env.get('development')) {
   window.__widgetData = {
@@ -20,18 +22,23 @@ if (Fliplet.Env.get('development')) {
   };
 }
 
-const data = Fliplet.Widget.getData();
+(function() {
+  const data = Fliplet.Widget.getData();
+  const fields = _.get(data, 'configuration.fields', []);
 
-data.configuration.fields.forEach((field) => {
-  field.type = 'fl' + field.type.charAt(0).toUpperCase() + field.type.slice(1);
-  field.value = _.get(data.attr, field.name);
-});
-
-import Application from './Application.vue';
-
-new Vue({
-  el: '#helper-configuration',
-  render: (createElement) => {
-    return createElement(Application);
+  if (!fields.length) {
+    Fliplet.Modal.alert({ message: 'This helper has not defined a list of fields for the interface.' });
+    return Fliplet.Widget.complete();
   }
-});
+
+  fields.forEach((field) => {
+    field.value = _.get(data.attr, field.name, field.default);
+  });
+
+  new Vue({
+    el: '#helper-configuration',
+    render: (createElement) => {
+      return createElement(Application);
+    }
+  });
+})();
