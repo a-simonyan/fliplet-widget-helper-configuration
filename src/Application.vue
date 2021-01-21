@@ -59,7 +59,7 @@ export default {
     if (this.configuration.init) {
       var init = new Function(this.configuration.init)();
 
-      init.call(this, this.configuration);
+      init.call(this, this.configuration, this.attr);
     }
   }
 };
