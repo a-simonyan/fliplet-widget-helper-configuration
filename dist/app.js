@@ -303,8 +303,9 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
     }
   },
   mounted: function mounted() {
+    var vm;
     Fliplet.Widget.onSaveRequest(function () {
-      $(this.$refs.submitButton).click();
+      $(vm.$refs.submitButton).click();
     });
 
     if (this.configuration.init) {

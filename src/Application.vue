@@ -52,8 +52,10 @@ export default {
     }
   },
   mounted() {
+    var vm;
+
     Fliplet.Widget.onSaveRequest(function() {
-      $(this.$refs.submitButton).click();
+      $(vm.$refs.submitButton).click();
     });
 
     if (this.configuration.init) {
