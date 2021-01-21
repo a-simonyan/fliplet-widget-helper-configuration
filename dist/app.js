@@ -274,19 +274,44 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   methods: {
     onSubmit: function onSubmit() {
-      Fliplet.Studio.emit('page-preview-send-event', {
-        type: 'helper-configuration-updated',
-        data: this.attr
+      var vm = this;
+      var beforeSave;
+
+      if (this.configuration.beforeSave) {
+        var beforeSaveFunction = new Function(this.configuration.beforeSave)();
+        beforeSave = beforeSaveFunction.call(this, this.attr, this.configuration);
+      }
+
+      if (!(beforeSave instanceof Promise)) {
+        beforeSave = Promise.resolve();
+      }
+
+      beforeSave.then(function () {
+        Fliplet.Studio.emit('page-preview-send-event', {
+          type: 'helper-configuration-updated',
+          // remove reactivity so objects are properly converted
+          // into data that can be transmitted
+          data: JSON.parse(JSON.stringify(vm.attr))
+        });
+        Fliplet.Studio.emit('widget-save-complete');
+      })["catch"](function (err) {
+        console.warn('Cannot save helper configuration', err);
+        Fliplet.Modal.alert({
+          message: Fliplet.parseError(err)
+        });
       });
-      Fliplet.Studio.emit('widget-save-complete');
     }
   },
   mounted: function mounted() {
-    var _this = this;
-
+    var vm = this;
     Fliplet.Widget.onSaveRequest(function () {
-      $(_this.$refs.submitButton).click();
+      $(vm.$refs.submitButton).click();
     });
+
+    if (this.configuration.init) {
+      var init = new Function(this.configuration.init)();
+      init.call(this, this.attr, this.configuration);
+    }
   }
 });
 
