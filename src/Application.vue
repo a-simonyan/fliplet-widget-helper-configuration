@@ -52,7 +52,7 @@ export default {
     }
   },
   mounted() {
-    var vm;
+    var vm = this;
 
     Fliplet.Widget.onSaveRequest(function() {
       $(vm.$refs.submitButton).click();
