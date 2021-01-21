@@ -295,7 +295,7 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
         });
         Fliplet.Studio.emit('widget-save-complete');
       })["catch"](function (err) {
-        console.error('Cannot save helper configuration', err);
+        console.warn('Cannot save helper configuration', err);
         Fliplet.Modal.alert({
           message: Fliplet.parseError(err)
         });
@@ -303,10 +303,8 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
     }
   },
   mounted: function mounted() {
-    var _this = this;
-
     Fliplet.Widget.onSaveRequest(function () {
-      $(_this.$refs.submitButton).click();
+      $(this.$refs.submitButton).click();
     });
 
     if (this.configuration.init) {

@@ -45,13 +45,14 @@ export default {
 
         Fliplet.Studio.emit('widget-save-complete');
       }).catch(function(err) {
-        console.error('Cannot save helper configuration', err);
+        console.warn('Cannot save helper configuration', err);
+
         Fliplet.Modal.alert({ message: Fliplet.parseError(err) });
       });
     }
   },
   mounted() {
-    Fliplet.Widget.onSaveRequest(() => {
+    Fliplet.Widget.onSaveRequest(function() {
       $(this.$refs.submitButton).click();
     });
 
