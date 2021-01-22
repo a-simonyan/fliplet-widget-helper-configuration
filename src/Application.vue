@@ -28,7 +28,13 @@ export default {
       if (this.configuration.beforeSave) {
         var beforeSaveFunction = new Function(this.configuration.beforeSave)();
 
-        beforeSave = beforeSaveFunction.call(this, this.attr, this.configuration);
+        if (beforeSaveFunction) {
+          try {
+            beforeSave = beforeSaveFunction.call(this, this.attr, this.configuration);
+          } catch (e) {
+            console.warn('The beforeSave function is invalid', e, this.configuration.beforeSave);
+          }
+        }
       }
 
       if (!(beforeSave instanceof Promise)) {
@@ -59,9 +65,16 @@ export default {
     });
 
     if (this.configuration.init) {
-      var init = new Function(this.configuration.init)();
+      var init = new Function(this.configuration.init);
 
-      init.call(this, this.attr, this.configuration);
+
+      if (init) {
+        try {
+          init.call(this, this.attr, this.configuration);
+        } catch (e) {
+          console.warn('The init function is invalid', e, this.configuration.init);
+        }
+      }
     }
   }
 };
