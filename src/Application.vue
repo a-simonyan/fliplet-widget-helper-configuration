@@ -67,7 +67,6 @@ export default {
     if (this.configuration.init) {
       var init = new Function(this.configuration.init);
 
-
       if (init) {
         try {
           init.call(this, this.attr, this.configuration);

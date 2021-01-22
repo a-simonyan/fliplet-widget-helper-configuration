@@ -317,7 +317,6 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
 
     if (this.configuration.init) {
       var init = new Function(this.configuration.init);
-      console.log('init', this.attr);
 
       if (init) {
         try {
