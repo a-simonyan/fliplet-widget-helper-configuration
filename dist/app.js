@@ -132,6 +132,18 @@ if (Fliplet.Env.get('development')) {
     return Fliplet.Widget.complete();
   }
 
+  if (data.configuration && data.configuration.beforeInit) {
+    var beforeInit = new Function(data.configuration.beforeInit)();
+
+    if (beforeInit) {
+      try {
+        beforeInit.call(this, data.attr, data.configuration);
+      } catch (e) {
+        console.warn('The beforeInit function is invalid', e, data.configuration.beforeInit);
+      }
+    }
+  }
+
   fields.forEach(function (field) {
     field.value = _.get(data.attr, field.name, field["default"]);
   });
@@ -279,7 +291,14 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
 
       if (this.configuration.beforeSave) {
         var beforeSaveFunction = new Function(this.configuration.beforeSave)();
-        beforeSave = beforeSaveFunction.call(this, this.attr, this.configuration);
+
+        if (beforeSaveFunction) {
+          try {
+            beforeSave = beforeSaveFunction.call(this, this.attr, this.configuration);
+          } catch (e) {
+            console.warn('The beforeSave function is invalid', e, this.configuration.beforeSave);
+          }
+        }
       }
 
       if (!(beforeSave instanceof Promise)) {
@@ -310,7 +329,14 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
 
     if (this.configuration.init) {
       var init = new Function(this.configuration.init)();
-      init.call(this, this.attr, this.configuration);
+
+      if (init) {
+        try {
+          init.call(this, this.configuration);
+        } catch (e) {
+          console.warn('The init function is invalid', e, this.configuration.init);
+        }
+      }
     }
   }
 });
@@ -405,6 +431,34 @@ var render = function() {
         })
       : _vm._e(),
     _vm._v(" "),
+    _vm.type === "textarea"
+      ? _c("textarea", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.value,
+              expression: "value"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: {
+            placeholder: _vm.placeholder,
+            required: _vm.required,
+            rows: _vm.rows || 4
+          },
+          domProps: { value: _vm.value },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.value = $event.target.value
+            }
+          }
+        })
+      : _vm._e(),
+    _vm._v(" "),
     _vm.html
       ? _c("div", { domProps: { innerHTML: _vm._s(_vm.html) } })
       : _vm._e()
@@ -439,8 +493,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['type', 'name', 'label', 'html', 'value', 'init', 'placeholder', 'default', 'description', 'required'],
+  props: ['type', 'name', 'label', 'html', 'value', 'init', 'placeholder', 'default', 'description', 'required', 'rows'],
   watch: {
     value: function value(newValue) {
       this.$parent.attr[this.name] = newValue;

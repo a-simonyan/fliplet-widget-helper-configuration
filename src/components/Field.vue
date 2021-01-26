@@ -3,6 +3,7 @@
     <label v-if="label">{{ label }}</label>
     <p v-if="description">{{ description }}</p>
     <input v-if="type === 'text'" type="text" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
+    <textarea v-if="type === 'textarea'" class="form-control" v-model="value" :placeholder="placeholder" :required="required" :rows="rows || 4"></textarea>
     <div v-if="html" v-html="html"></div>
   </div>
 </template>
@@ -19,7 +20,8 @@ export default {
     'placeholder',
     'default',
     'description',
-    'required'
+    'required',
+    'rows'
   ],
   watch: {
     value(newValue) {

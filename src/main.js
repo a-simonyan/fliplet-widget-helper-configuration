@@ -31,6 +31,18 @@ if (Fliplet.Env.get('development')) {
     return Fliplet.Widget.complete();
   }
 
+  if (data.configuration && data.configuration.beforeInit) {
+    var beforeInit = new Function(data.configuration.beforeInit)();
+
+    if (beforeInit) {
+      try {
+        beforeInit.call(this, data.attr, data.configuration);
+      } catch (e) {
+        console.warn('The beforeInit function is invalid', e, data.configuration.beforeInit);
+      }
+    }
+  }
+
   fields.forEach((field) => {
     field.value = _.get(data.attr, field.name, field.default);
   });
