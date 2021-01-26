@@ -132,6 +132,18 @@ if (Fliplet.Env.get('development')) {
     return Fliplet.Widget.complete();
   }
 
+  if (data.configuration && data.configuration.beforeInit) {
+    var beforeInit = new Function(data.configuration.beforeInit)();
+
+    if (beforeInit) {
+      try {
+        beforeInit.call(this, data.attr, data.configuration);
+      } catch (e) {
+        console.warn('The beforeInit function is invalid', e, data.configuration.beforeInit);
+      }
+    }
+  }
+
   fields.forEach(function (field) {
     field.value = _.get(data.attr, field.name, field["default"]);
   });
@@ -316,11 +328,11 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
     });
 
     if (this.configuration.init) {
-      var init = new Function(this.configuration.init);
+      var init = new Function(this.configuration.init)();
 
       if (init) {
         try {
-          init.call(this, this.attr, this.configuration);
+          init.call(this, this.configuration);
         } catch (e) {
           console.warn('The init function is invalid', e, this.configuration.init);
         }

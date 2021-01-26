@@ -65,11 +65,11 @@ export default {
     });
 
     if (this.configuration.init) {
-      var init = new Function(this.configuration.init);
+      var init = new Function(this.configuration.init)();
 
       if (init) {
         try {
-          init.call(this, this.attr, this.configuration);
+          init.call(this, this.configuration);
         } catch (e) {
           console.warn('The init function is invalid', e, this.configuration.init);
         }
