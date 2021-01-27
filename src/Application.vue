@@ -32,7 +32,9 @@ export default {
           try {
             beforeSave = beforeSaveFunction.call(this, this.attr, this.configuration);
           } catch (e) {
-            console.warn('The beforeSave function is invalid', e, this.configuration.beforeSave);
+            console.warn('The beforeSave function has thrown an error', e, this.configuration.beforeSave);
+
+            Fliplet.Modal.alert({ message: Fliplet.parseError(e) });
           }
         }
       }
