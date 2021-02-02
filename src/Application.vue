@@ -66,14 +66,14 @@ export default {
       $(vm.$refs.submitButton).click();
     });
 
-    if (this.configuration.beforeReady) {
-      var beforeReady = new Function(this.configuration.beforeReady)();
+    if (this.configuration.ready) {
+      var ready = new Function(this.configuration.ready)();
 
-      if (beforeReady) {
+      if (ready) {
         try {
-          beforeReady.call(this, this.fields, this.configuration);
+          ready.call(this, this.fields, this.configuration);
         } catch (e) {
-          console.warn('The beforeReady function is invalid', e, this.configuration.beforeReady);
+          console.warn('The ready function is invalid', e, this.configuration.ready);
         }
       }
     }

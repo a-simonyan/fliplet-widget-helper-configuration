@@ -132,14 +132,14 @@ if (Fliplet.Env.get('development')) {
     return Fliplet.Widget.complete();
   }
 
-  if (data.configuration && data.configuration.beforeInit) {
-    var beforeInit = new Function(data.configuration.beforeInit)();
+  if (data.configuration && data.configuration.beforeReady) {
+    var beforeReady = new Function(data.configuration.beforeReady)();
 
-    if (beforeInit) {
+    if (beforeReady) {
       try {
-        beforeInit.call(this, data.fields, data.configuration);
+        beforeReady.call(this, data.fields, data.configuration);
       } catch (e) {
-        console.warn('The beforeInit function is invalid', e, data.configuration.beforeInit);
+        console.warn('The beforeReady function is invalid', e, data.configuration.beforeReady);
       }
     }
   }
@@ -331,14 +331,14 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
       $(vm.$refs.submitButton).click();
     });
 
-    if (this.configuration.beforeReady) {
-      var beforeReady = new Function(this.configuration.beforeReady)();
+    if (this.configuration.ready) {
+      var ready = new Function(this.configuration.ready)();
 
-      if (beforeReady) {
+      if (ready) {
         try {
-          beforeReady.call(this, this.fields, this.configuration);
+          ready.call(this, this.fields, this.configuration);
         } catch (e) {
-          console.warn('The beforeReady function is invalid', e, this.configuration.beforeReady);
+          console.warn('The ready function is invalid', e, this.configuration.ready);
         }
       }
     }

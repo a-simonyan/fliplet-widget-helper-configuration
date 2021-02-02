@@ -31,14 +31,14 @@ if (Fliplet.Env.get('development')) {
     return Fliplet.Widget.complete();
   }
 
-  if (data.configuration && data.configuration.beforeInit) {
-    var beforeInit = new Function(data.configuration.beforeInit)();
+  if (data.configuration && data.configuration.beforeReady) {
+    var beforeReady = new Function(data.configuration.beforeReady)();
 
-    if (beforeInit) {
+    if (beforeReady) {
       try {
-        beforeInit.call(this, data.fields, data.configuration);
+        beforeReady.call(this, data.fields, data.configuration);
       } catch (e) {
-        console.warn('The beforeInit function is invalid', e, data.configuration.beforeInit);
+        console.warn('The beforeReady function is invalid', e, data.configuration.beforeReady);
       }
     }
   }
