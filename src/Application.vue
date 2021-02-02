@@ -66,14 +66,14 @@ export default {
       $(vm.$refs.submitButton).click();
     });
 
-    if (this.configuration.init) {
-      var init = new Function(this.configuration.init)();
+    if (this.configuration.beforeReady) {
+      var beforeReady = new Function(this.configuration.beforeReady)();
 
-      if (init) {
+      if (beforeReady) {
         try {
-          init.call(this, this.configuration);
+          beforeReady.call(this, this.configuration);
         } catch (e) {
-          console.warn('The init function is invalid', e, this.configuration.init);
+          console.warn('The beforeReady function is invalid', e, this.configuration.beforeReady);
         }
       }
     }

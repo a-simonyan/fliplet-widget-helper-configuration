@@ -39,9 +39,9 @@ export default {
     }
   },
   mounted() {
-    if (this.init) {
-      const init = new Function(this.init)();
-      init.call(this, this.$el);
+    if (this.ready) {
+      const ready = new Function(this.ready)();
+      ready.call(this, this.$el);
     }
   }
 };
