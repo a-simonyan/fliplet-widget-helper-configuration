@@ -107,7 +107,7 @@ if (Fliplet.Env.get('development')) {
             label: 'Your name'
           }]
         },
-        attr: {
+        fields: {
           name: 'Doe',
           type: 'welcome'
         },
@@ -132,20 +132,20 @@ if (Fliplet.Env.get('development')) {
     return Fliplet.Widget.complete();
   }
 
-  if (data.configuration && data.configuration.beforeInit) {
-    var beforeInit = new Function(data.configuration.beforeInit)();
+  if (data.configuration && data.configuration.beforeReady) {
+    var beforeReady = new Function(data.configuration.beforeReady)();
 
-    if (beforeInit) {
+    if (beforeReady) {
       try {
-        beforeInit.call(this, data.attr, data.configuration);
+        beforeReady.call(this, data.fields, data.configuration);
       } catch (e) {
-        console.warn('The beforeInit function is invalid', e, data.configuration.beforeInit);
+        console.warn('The beforeReady function is invalid', e, data.configuration.beforeReady);
       }
     }
   }
 
   fields.forEach(function (field) {
-    field.value = _.get(data.attr, field.name, field["default"]);
+    field.value = _.get(data.fields, field.name, field["default"]);
   });
   new Vue({
     el: '#helper-configuration',
@@ -294,7 +294,7 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
 
         if (beforeSaveFunction) {
           try {
-            beforeSave = beforeSaveFunction.call(this, this.attr, this.configuration);
+            beforeSave = beforeSaveFunction.call(this, this.fields, this.configuration);
           } catch (e) {
             console.warn('The beforeSave function has thrown an error', e, this.configuration.beforeSave);
             Fliplet.Modal.alert({
@@ -313,12 +313,13 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
           type: 'helper-configuration-updated',
           // remove reactivity so objects are properly converted
           // into data that can be transmitted
-          data: JSON.parse(JSON.stringify(vm.attr))
+          data: JSON.parse(JSON.stringify(vm.fields))
         });
         Fliplet.Studio.emit('widget-save-complete');
       })["catch"](function (err) {
         console.warn('Cannot save helper configuration', err);
         Fliplet.Modal.alert({
+          title: 'Error saving configurations',
           message: Fliplet.parseError(err)
         });
       });
@@ -330,14 +331,14 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
       $(vm.$refs.submitButton).click();
     });
 
-    if (this.configuration.init) {
-      var init = new Function(this.configuration.init)();
+    if (this.configuration.ready) {
+      var ready = new Function(this.configuration.ready)();
 
-      if (init) {
+      if (ready) {
         try {
-          init.call(this, this.configuration);
+          ready.call(this, this.fields, this.configuration);
         } catch (e) {
-          console.warn('The init function is invalid', e, this.configuration.init);
+          console.warn('The ready function is invalid', e, this.configuration.ready);
         }
       }
     }
@@ -501,7 +502,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ['type', 'name', 'label', 'html', 'value', 'init', 'placeholder', 'default', 'description', 'required', 'rows'],
   watch: {
     value: function value(newValue) {
-      this.$parent.attr[this.name] = newValue;
+      this.$parent.fields[this.name] = newValue;
     }
   },
   methods: {
@@ -515,9 +516,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    if (this.init) {
-      var init = new Function(this.init)();
-      init.call(this, this.$el);
+    if (this.ready) {
+      var ready = new Function(this.ready)();
+      ready.call(this, this.$el);
     }
   }
 });

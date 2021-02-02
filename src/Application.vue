@@ -30,7 +30,7 @@ export default {
 
         if (beforeSaveFunction) {
           try {
-            beforeSave = beforeSaveFunction.call(this, this.attr, this.configuration);
+            beforeSave = beforeSaveFunction.call(this, this.fields, this.configuration);
           } catch (e) {
             console.warn('The beforeSave function has thrown an error', e, this.configuration.beforeSave);
 
@@ -48,7 +48,7 @@ export default {
           type: 'helper-configuration-updated',
           // remove reactivity so objects are properly converted
           // into data that can be transmitted
-          data: JSON.parse(JSON.stringify(vm.attr))
+          data: JSON.parse(JSON.stringify(vm.fields))
         });
 
         Fliplet.Studio.emit('widget-save-complete');
@@ -66,14 +66,14 @@ export default {
       $(vm.$refs.submitButton).click();
     });
 
-    if (this.configuration.init) {
-      var init = new Function(this.configuration.init)();
+    if (this.configuration.ready) {
+      var ready = new Function(this.configuration.ready)();
 
-      if (init) {
+      if (ready) {
         try {
-          init.call(this, this.configuration);
+          ready.call(this, this.fields, this.configuration);
         } catch (e) {
-          console.warn('The init function is invalid', e, this.configuration.init);
+          console.warn('The ready function is invalid', e, this.configuration.ready);
         }
       }
     }
