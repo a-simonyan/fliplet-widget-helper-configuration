@@ -319,6 +319,7 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
       })["catch"](function (err) {
         console.warn('Cannot save helper configuration', err);
         Fliplet.Modal.alert({
+          title: 'Error saving configurations',
           message: Fliplet.parseError(err)
         });
       });
@@ -330,14 +331,14 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
       $(vm.$refs.submitButton).click();
     });
 
-    if (this.configuration.init) {
-      var init = new Function(this.configuration.init)();
+    if (this.configuration.beforeReady) {
+      var beforeReady = new Function(this.configuration.beforeReady)();
 
-      if (init) {
+      if (beforeReady) {
         try {
-          init.call(this, this.configuration);
+          beforeReady.call(this, this.configuration);
         } catch (e) {
-          console.warn('The init function is invalid', e, this.configuration.init);
+          console.warn('The beforeReady function is invalid', e, this.configuration.beforeReady);
         }
       }
     }
@@ -515,9 +516,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    if (this.init) {
-      var init = new Function(this.init)();
-      init.call(this, this.$el);
+    if (this.ready) {
+      var ready = new Function(this.ready)();
+      ready.call(this, this.$el);
     }
   }
 });
