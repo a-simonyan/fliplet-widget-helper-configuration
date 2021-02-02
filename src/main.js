@@ -12,7 +12,7 @@ if (Fliplet.Env.get('development')) {
           dependencies: ['tinymce'],
           fields: [{ name: 'name', type: 'text', label: 'Your name' }]
         },
-        attr: { name: 'Doe', type: 'welcome' },
+        fields: { name: 'Doe', type: 'welcome' },
         event: 'helper-instance-configure',
         id: 'com.fliplet.helper-configuration',
         package: 'com.fliplet.helper-configuration',
@@ -36,7 +36,7 @@ if (Fliplet.Env.get('development')) {
 
     if (beforeInit) {
       try {
-        beforeInit.call(this, data.attr, data.configuration);
+        beforeInit.call(this, data.fields, data.configuration);
       } catch (e) {
         console.warn('The beforeInit function is invalid', e, data.configuration.beforeInit);
       }
@@ -44,7 +44,7 @@ if (Fliplet.Env.get('development')) {
   }
 
   fields.forEach((field) => {
-    field.value = _.get(data.attr, field.name, field.default);
+    field.value = _.get(data.fields, field.name, field.default);
   });
 
   new Vue({

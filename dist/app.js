@@ -107,7 +107,7 @@ if (Fliplet.Env.get('development')) {
             label: 'Your name'
           }]
         },
-        attr: {
+        fields: {
           name: 'Doe',
           type: 'welcome'
         },
@@ -137,7 +137,7 @@ if (Fliplet.Env.get('development')) {
 
     if (beforeInit) {
       try {
-        beforeInit.call(this, data.attr, data.configuration);
+        beforeInit.call(this, data.fields, data.configuration);
       } catch (e) {
         console.warn('The beforeInit function is invalid', e, data.configuration.beforeInit);
       }
@@ -145,7 +145,7 @@ if (Fliplet.Env.get('development')) {
   }
 
   fields.forEach(function (field) {
-    field.value = _.get(data.attr, field.name, field["default"]);
+    field.value = _.get(data.fields, field.name, field["default"]);
   });
   new Vue({
     el: '#helper-configuration',
@@ -294,7 +294,7 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
 
         if (beforeSaveFunction) {
           try {
-            beforeSave = beforeSaveFunction.call(this, this.attr, this.configuration);
+            beforeSave = beforeSaveFunction.call(this, this.fields, this.configuration);
           } catch (e) {
             console.warn('The beforeSave function has thrown an error', e, this.configuration.beforeSave);
             Fliplet.Modal.alert({
@@ -313,7 +313,7 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
           type: 'helper-configuration-updated',
           // remove reactivity so objects are properly converted
           // into data that can be transmitted
-          data: JSON.parse(JSON.stringify(vm.attr))
+          data: JSON.parse(JSON.stringify(vm.fields))
         });
         Fliplet.Studio.emit('widget-save-complete');
       })["catch"](function (err) {
@@ -336,7 +336,7 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
 
       if (beforeReady) {
         try {
-          beforeReady.call(this, this.configuration);
+          beforeReady.call(this, this.fields, this.configuration);
         } catch (e) {
           console.warn('The beforeReady function is invalid', e, this.configuration.beforeReady);
         }
@@ -502,7 +502,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ['type', 'name', 'label', 'html', 'value', 'init', 'placeholder', 'default', 'description', 'required', 'rows'],
   watch: {
     value: function value(newValue) {
-      this.$parent.attr[this.name] = newValue;
+      this.$parent.fields[this.name] = newValue;
     }
   },
   methods: {

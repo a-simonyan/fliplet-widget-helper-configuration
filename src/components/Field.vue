@@ -25,7 +25,7 @@ export default {
   ],
   watch: {
     value(newValue) {
-      this.$parent.attr[this.name] = newValue;
+      this.$parent.fields[this.name] = newValue;
     }
   },
   methods: {
