@@ -55,7 +55,7 @@ export default {
       }).catch(function(err) {
         console.warn('Cannot save helper configuration', err);
 
-        Fliplet.Modal.alert({ message: Fliplet.parseError(err) });
+        Fliplet.Modal.alert({ title: 'Error saving configurations', message: Fliplet.parseError(err) });
       });
     }
   },
