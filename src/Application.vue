@@ -32,6 +32,7 @@ export default {
           try {
             beforeSave = beforeSaveFunction.call(this, this.fields, this.configuration);
           } catch (e) {
+            // eslint-disable-next-line no-console
             console.warn('The beforeSave function has thrown an error', e, this.configuration.beforeSave);
 
             Fliplet.Modal.alert({ message: Fliplet.parseError(e) });

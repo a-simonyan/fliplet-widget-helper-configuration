@@ -20,4 +20,23 @@
   &:last-child {
     border-bottom: 0;
   }
+
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+
+    label {
+      margin-right: 12px;
+      font-weight: normal;
+      display: flex;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      input {
+        margin-right: 3px;
+      }
+    }
+  }
 }
