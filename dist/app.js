@@ -500,7 +500,7 @@ var render = function() {
         })
       : _vm._e(),
     _vm._v(" "),
-    _vm.options
+    _vm.options && ["radio", "checkbox"].indexOf(_vm.type) !== -1
       ? _c(
           "div",
           { staticClass: "options" },

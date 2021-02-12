@@ -5,7 +5,7 @@
     <input v-if="type === 'text'" type="text" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
     <input v-if="type === 'email'" type="email" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
     <textarea v-if="type === 'textarea'" class="form-control" v-model="value" :placeholder="placeholder" :required="required" :rows="rows || 4"></textarea>
-    <div class="options" v-if="options">
+    <div class="options" v-if="options && ['radio', 'checkbox'].indexOf(type) !== -1">
       <label v-bind:key="option.value || option" v-for="option in options">
         <input :name="name" :type="type" :value="option.value" /> {{ option.label || option.value || option }}
       </label>
