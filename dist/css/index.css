@@ -16,3 +16,14 @@
   border-bottom: 1px solid #DDD; }
   .form-group:last-child {
     border-bottom: 0; }
+  .form-group .options {
+    display: flex;
+    flex-wrap: wrap; }
+    .form-group .options label {
+      margin-right: 12px;
+      font-weight: normal;
+      display: flex; }
+      .form-group .options label:hover {
+        cursor: pointer; }
+      .form-group .options label input {
+        margin-right: 3px; }

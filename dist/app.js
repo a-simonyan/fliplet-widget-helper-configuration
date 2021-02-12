@@ -105,6 +105,14 @@ if (Fliplet.Env.get('development')) {
             name: 'name',
             type: 'text',
             label: 'Your name'
+          }, {
+            name: 'opts',
+            type: 'radio',
+            label: 'Your name',
+            options: ['Sausage', {
+              label: 'Pineapple',
+              value: 'baz'
+            }]
           }]
         },
         fields: {
@@ -296,6 +304,7 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_0__["default"]
           try {
             beforeSave = beforeSaveFunction.call(this, this.fields, this.configuration);
           } catch (e) {
+            // eslint-disable-next-line no-console
             console.warn('The beforeSave function has thrown an error', e, this.configuration.beforeSave);
             Fliplet.Modal.alert({
               message: Fliplet.parseError(e)
@@ -435,6 +444,34 @@ var render = function() {
         })
       : _vm._e(),
     _vm._v(" "),
+    _vm.type === "email"
+      ? _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.value,
+              expression: "value"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: {
+            type: "email",
+            placeholder: _vm.placeholder,
+            required: _vm.required
+          },
+          domProps: { value: _vm.value },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.value = $event.target.value
+            }
+          }
+        })
+      : _vm._e(),
+    _vm._v(" "),
     _vm.type === "textarea"
       ? _c("textarea", {
           directives: [
@@ -461,6 +498,25 @@ var render = function() {
             }
           }
         })
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.options && ["radio", "checkbox"].indexOf(_vm.type) !== -1
+      ? _c(
+          "div",
+          { staticClass: "options" },
+          _vm._l(_vm.options, function(option) {
+            return _c("label", { key: option.value || option }, [
+              _c("input", {
+                attrs: { name: _vm.name, type: _vm.type },
+                domProps: { value: option.value }
+              }),
+              _vm._v(
+                " " + _vm._s(option.label || option.value || option) + "\n    "
+              )
+            ])
+          }),
+          0
+        )
       : _vm._e(),
     _vm._v(" "),
     _vm.html
@@ -498,8 +554,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['type', 'name', 'label', 'html', 'value', 'init', 'placeholder', 'default', 'description', 'required', 'rows'],
+  props: ['type', 'name', 'label', 'html', 'value', 'init', 'placeholder', 'default', 'description', 'required', 'rows', 'options'],
   watch: {
     value: function value(newValue) {
       this.$parent.fields[this.name] = newValue;
