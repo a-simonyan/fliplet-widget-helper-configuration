@@ -52,6 +52,22 @@ export default {
       }
 
       return this.value;
+    },
+    onSubmit() {
+      if (!this.provider) {
+        return;
+      }
+
+      const op = new Promise((resolve) => {
+        this.provider.then((result) => {
+          this.value = result.data;
+          resolve();
+        });
+      });
+
+      this.provider.forwardSaveRequest();
+
+      return op;
     }
   },
   mounted() {
@@ -62,7 +78,10 @@ export default {
 
       this.provider = Fliplet.Widget.open(this.package, {
         selector: $(this.$el).find('.provider')[0],
-        data: this.value || {}
+        data: typeof this.value === 'object'
+          // Normalize Vue objects into plain JSON objects
+          ? JSON.parse(JSON.stringify(this.value))
+          : (this.value || {})
       });
     }
 

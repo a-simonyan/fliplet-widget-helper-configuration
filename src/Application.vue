@@ -4,7 +4,7 @@
 
     <form ref="form" class="fields" v-on:submit.prevent="onSubmit">
       <template v-for="field in configuration.fields">
-        <field v-bind="field" v-bind:key="field.name"></field>
+        <field ref="fieldInstances" v-bind="field" v-bind:key="field.name"></field>
       </template>
       <input ref="submitButton" type="submit" style="display:none"/>
     </form>
@@ -21,9 +21,13 @@ export default {
     return Fliplet.Widget.getData();
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
       var vm = this;
       var beforeSave;
+
+      await Promise.all(this.$refs.fieldInstances.map((field) => {
+        return field.onSubmit();
+      }));
 
       if (this.configuration.beforeSave) {
         var beforeSaveFunction = new Function(this.configuration.beforeSave)();
