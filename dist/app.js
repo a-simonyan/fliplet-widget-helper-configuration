@@ -370,7 +370,6 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_2__["default"]
                 }));
 
               case 3:
-                // eslint-disable-next-line no-unreachable
                 if (_this.configuration.beforeSave) {
                   beforeSaveFunction = new Function(_this.configuration.beforeSave)();
 
@@ -1532,11 +1531,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      guid: Fliplet.guid()
-    };
-  },
   props: ['type', 'name', 'label', 'html', 'value', 'init', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'package'],
   watch: {
     value: function value(newValue) {

@@ -19,11 +19,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-      guid: Fliplet.guid()
-    };
-  },
   props: [
     'type',
     'name',
