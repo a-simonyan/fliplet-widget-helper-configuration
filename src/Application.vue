@@ -54,6 +54,7 @@ export default {
 
         Fliplet.Studio.emit('widget-save-complete');
       }).catch(function(err) {
+        // eslint-disable-next-line no-console
         console.warn('Cannot save helper configuration', err);
 
         Fliplet.Modal.alert({ title: 'Error saving configurations', message: Fliplet.parseError(err) });
@@ -74,6 +75,7 @@ export default {
         try {
           ready.call(this, this.fields, this.configuration);
         } catch (e) {
+          // eslint-disable-next-line no-console
           console.warn('The ready function is invalid', e, this.configuration.ready);
         }
       }
