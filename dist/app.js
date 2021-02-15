@@ -1297,193 +1297,191 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "form-group" }, [
-      _vm.label ? _c("label", [_vm._v(_vm._s(_vm.label))]) : _vm._e(),
-      _vm._v(" "),
-      _vm.description ? _c("p", [_vm._v(_vm._s(_vm.description))]) : _vm._e(),
-      _vm._v(" "),
-      _vm.type === "text"
-        ? _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.value,
-                expression: "value"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "text",
-              placeholder: _vm.placeholder,
-              required: _vm.required
-            },
-            domProps: { value: _vm.value },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.value = $event.target.value
-              }
+  return _c("div", { staticClass: "form-group" }, [
+    _vm.label ? _c("label", [_vm._v(_vm._s(_vm.label))]) : _vm._e(),
+    _vm._v(" "),
+    _vm.description ? _c("p", [_vm._v(_vm._s(_vm.description))]) : _vm._e(),
+    _vm._v(" "),
+    _vm.type === "text"
+      ? _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.value,
+              expression: "value"
             }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.type === "email"
-        ? _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.value,
-                expression: "value"
+          ],
+          staticClass: "form-control",
+          attrs: {
+            type: "text",
+            placeholder: _vm.placeholder,
+            required: _vm.required
+          },
+          domProps: { value: _vm.value },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
               }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "email",
-              placeholder: _vm.placeholder,
-              required: _vm.required
-            },
-            domProps: { value: _vm.value },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.value = $event.target.value
-              }
+              _vm.value = $event.target.value
             }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.type === "textarea"
-        ? _c("textarea", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.value,
-                expression: "value"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              placeholder: _vm.placeholder,
-              required: _vm.required,
-              rows: _vm.rows || 4
-            },
-            domProps: { value: _vm.value },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.value = $event.target.value
-              }
+          }
+        })
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.type === "email"
+      ? _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.value,
+              expression: "value"
             }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.options && ["radio", "checkbox"].indexOf(_vm.type) !== -1
-        ? _c(
-            "div",
-            { staticClass: "options" },
-            _vm._l(_vm.options, function(option) {
-              return _c("label", { key: option.value }, [
-                _vm.type === "checkbox"
-                  ? _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.value,
-                          expression: "value"
-                        }
-                      ],
-                      attrs: { name: _vm.name, type: "checkbox" },
-                      domProps: {
-                        value: option.value,
-                        checked: Array.isArray(_vm.value)
-                          ? _vm._i(_vm.value, option.value) > -1
-                          : _vm.value
-                      },
-                      on: {
-                        change: function($event) {
-                          var $$a = _vm.value,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = option.value,
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 && (_vm.value = $$a.concat([$$v]))
-                            } else {
-                              $$i > -1 &&
-                                (_vm.value = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
-                            }
+          ],
+          staticClass: "form-control",
+          attrs: {
+            type: "email",
+            placeholder: _vm.placeholder,
+            required: _vm.required
+          },
+          domProps: { value: _vm.value },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.value = $event.target.value
+            }
+          }
+        })
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.type === "textarea"
+      ? _c("textarea", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.value,
+              expression: "value"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: {
+            placeholder: _vm.placeholder,
+            required: _vm.required,
+            rows: _vm.rows || 4
+          },
+          domProps: { value: _vm.value },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.value = $event.target.value
+            }
+          }
+        })
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.options && ["radio", "checkbox"].indexOf(_vm.type) !== -1
+      ? _c(
+          "div",
+          { staticClass: "options" },
+          _vm._l(_vm.options, function(option) {
+            return _c("label", { key: option.value }, [
+              _vm.type === "checkbox"
+                ? _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.value,
+                        expression: "value"
+                      }
+                    ],
+                    attrs: { name: _vm.name, type: "checkbox" },
+                    domProps: {
+                      value: option.value,
+                      checked: Array.isArray(_vm.value)
+                        ? _vm._i(_vm.value, option.value) > -1
+                        : _vm.value
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.value,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = option.value,
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 && (_vm.value = $$a.concat([$$v]))
                           } else {
-                            _vm.value = $$c
+                            $$i > -1 &&
+                              (_vm.value = $$a
+                                .slice(0, $$i)
+                                .concat($$a.slice($$i + 1)))
                           }
+                        } else {
+                          _vm.value = $$c
                         }
                       }
-                    })
-                  : _vm.type === "radio"
-                  ? _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.value,
-                          expression: "value"
-                        }
-                      ],
-                      attrs: { name: _vm.name, type: "radio" },
-                      domProps: {
-                        value: option.value,
-                        checked: _vm._q(_vm.value, option.value)
-                      },
-                      on: {
-                        change: function($event) {
-                          _vm.value = option.value
-                        }
+                    }
+                  })
+                : _vm.type === "radio"
+                ? _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.value,
+                        expression: "value"
                       }
-                    })
-                  : _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.value,
-                          expression: "value"
-                        }
-                      ],
-                      attrs: { name: _vm.name, type: _vm.type },
-                      domProps: { value: option.value, value: _vm.value },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.value = $event.target.value
-                        }
+                    ],
+                    attrs: { name: _vm.name, type: "radio" },
+                    domProps: {
+                      value: option.value,
+                      checked: _vm._q(_vm.value, option.value)
+                    },
+                    on: {
+                      change: function($event) {
+                        _vm.value = option.value
                       }
-                    }),
-                _vm._v(" " + _vm._s(option.label || option.value) + "\n      ")
-              ])
-            }),
-            0
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.html
-        ? _c("div", { domProps: { innerHTML: _vm._s(_vm.html) } })
-        : _vm._e()
-    ]),
+                    }
+                  })
+                : _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.value,
+                        expression: "value"
+                      }
+                    ],
+                    attrs: { name: _vm.name, type: _vm.type },
+                    domProps: { value: option.value, value: _vm.value },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.value = $event.target.value
+                      }
+                    }
+                  }),
+              _vm._v(" " + _vm._s(option.label || option.value) + "\n    ")
+            ])
+          }),
+          0
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.html
+      ? _c("div", { domProps: { innerHTML: _vm._s(_vm.html) } })
+      : _vm._e(),
     _vm._v(" "),
     _vm.type === "provider" ? _c("div", { staticClass: "provider" }) : _vm._e()
   ])
@@ -1511,8 +1509,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
 
-//
-//
 //
 //
 //
