@@ -38,6 +38,7 @@ if (Fliplet.Env.get('development')) {
       try {
         beforeReady.call(this, data.fields, data.configuration);
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.warn('The beforeReady function is invalid', e, data.configuration.beforeReady);
       }
     }
@@ -45,6 +46,21 @@ if (Fliplet.Env.get('development')) {
 
   fields.forEach((field) => {
     field.value = _.get(data.fields, field.name, field.default);
+
+    // Normalize options
+    if (Array.isArray(field.options)) {
+      field.options = field.options.map((opt) => {
+        if (typeof opt === 'object') {
+          return opt;
+        }
+
+        return { value: opt };
+      });
+
+      if (field.type === 'checkbox' && !Array.isArray(field.value)) {
+        field.value = [];
+      }
+    }
   });
 
   new Vue({

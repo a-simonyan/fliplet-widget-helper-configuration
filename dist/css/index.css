@@ -1,3 +1,8 @@
+.provider .fl-widget-provider {
+  width: 100%;
+  border: 0;
+  background-color: transparent; }
+
 .interface {
   padding: 0 15px; }
 

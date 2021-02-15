@@ -4,7 +4,7 @@
 
     <form ref="form" class="fields" v-on:submit.prevent="onSubmit">
       <template v-for="field in configuration.fields">
-        <field v-bind="field" v-bind:key="field.name"></field>
+        <field ref="fieldInstances" v-bind="field" v-bind:key="field.name"></field>
       </template>
       <input ref="submitButton" type="submit" style="display:none"/>
     </form>
@@ -21,9 +21,13 @@ export default {
     return Fliplet.Widget.getData();
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
       var vm = this;
       var beforeSave;
+
+      await Promise.all(this.$refs.fieldInstances.map((field) => {
+        return field.onSubmit();
+      }));
 
       if (this.configuration.beforeSave) {
         var beforeSaveFunction = new Function(this.configuration.beforeSave)();
@@ -54,6 +58,7 @@ export default {
 
         Fliplet.Studio.emit('widget-save-complete');
       }).catch(function(err) {
+        // eslint-disable-next-line no-console
         console.warn('Cannot save helper configuration', err);
 
         Fliplet.Modal.alert({ title: 'Error saving configurations', message: Fliplet.parseError(err) });
@@ -74,6 +79,7 @@ export default {
         try {
           ready.call(this, this.fields, this.configuration);
         } catch (e) {
+          // eslint-disable-next-line no-console
           console.warn('The ready function is invalid', e, this.configuration.ready);
         }
       }
