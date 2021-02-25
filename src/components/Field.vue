@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import { findAll, findOne, findChildren } from '../libs/lookups';
+
 export default {
   props: [
     'type',
@@ -23,7 +25,7 @@ export default {
     'label',
     'html',
     'value',
-    'init',
+    'ready',
     'placeholder',
     'default',
     'description',
@@ -38,6 +40,9 @@ export default {
     }
   },
   methods: {
+    find: findAll,
+    findOne: findOne,
+    children: findChildren,
     val(newValue) {
       if (typeof newValue !== 'undefined') {
         this.value = newValue;

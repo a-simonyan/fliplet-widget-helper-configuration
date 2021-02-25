@@ -121,6 +121,11 @@ if (Fliplet.Env.get('development')) {
             label: 'Provider',
             type: 'provider',
             "package": 'com.fliplet.data-source-provider'
+          }, {
+            name: 'foo',
+            type: 'html',
+            html: 'foo',
+            ready: 'return function ready() { this.find(1); }'
           }]
         },
         fields: {
@@ -218,7 +223,7 @@ module.exports = _typeof;
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Application_vue_vue_type_template_id_44b1e432___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _Application_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(15);
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
 
 
 
@@ -332,6 +337,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _components_Field__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
+/* harmony import */ var _libs_lookups__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
 
 
 //
@@ -347,6 +353,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_2__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -354,6 +361,9 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_2__["default"]
     return Fliplet.Widget.getData();
   },
   methods: {
+    find: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findAll"],
+    findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findOne"],
+    children: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findChildren"],
     onSubmit: function onSubmit() {
       var _this = this;
 
@@ -1248,7 +1258,7 @@ module.exports = _asyncToGenerator;
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Field_vue_vue_type_template_id_3a2f7ffa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
 /* harmony import */ var _Field_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(15);
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
 
 
 
@@ -1508,6 +1518,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _libs_lookups__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
 
 //
 //
@@ -1526,14 +1537,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['type', 'name', 'label', 'html', 'value', 'init', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'package'],
+  props: ['type', 'name', 'label', 'html', 'value', 'ready', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'package'],
   watch: {
     value: function value(newValue) {
       this.$parent.fields[this.name] = newValue;
     }
   },
   methods: {
+    find: _libs_lookups__WEBPACK_IMPORTED_MODULE_1__["findAll"],
+    findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_1__["findOne"],
+    children: _libs_lookups__WEBPACK_IMPORTED_MODULE_1__["findChildren"],
     val: function val(newValue) {
       if (typeof newValue !== 'undefined') {
         this.value = newValue;
@@ -1581,6 +1596,87 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 /* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findAll", function() { return findAll; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findOne", function() { return findOne; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findChildren", function() { return findChildren; });
+var data = Fliplet.Widget.getData();
+
+var helperInstances = _.get(data, 'helperInstances', []);
+
+var instanceId = _.get(data, 'instanceId', '');
+/**
+ * Returns a boolean indicating whether a nested helper instance matches a filter
+ * @param {Helper} instance The helper instance
+ * @param {Function} predicate The function invoked per iteration
+ * @returns {Boolean} Whether the element matches
+ */
+
+
+function helperMatches(instance, predicate) {
+  return instance.id !== instanceId && instance.isChildren && (predicate ? _.find([instance], predicate) : true);
+}
+/**
+ * Prepares a predicate filter before it's sent to the various
+ * find functions for helpers. This allows a given predicate shorthand
+ * to be converted into the suitable filter.
+ * @param {Function|String|Object} predicate A filter
+ * @return {Function|Object} The prepared predicate
+ */
+
+
+function prepareFilter(predicate) {
+  if (typeof predicate === 'string') {
+    return {
+      name: predicate
+    };
+  }
+
+  return predicate;
+}
+/**
+ * Finds all matching child helpers (through all levels)
+ * @param {Function} predicate The function invoked per iteration
+ * @returns {Array} The matched helpers
+ */
+
+
+function findAll(predicate) {
+  predicate = prepareFilter(predicate);
+  return _.filter(helperInstances, function (instance) {
+    return helperMatches(instance, predicate);
+  });
+}
+/**
+ * Finds a matching child helper (through all levels)
+ * @param {Function} predicate The function invoked per iteration
+ * @returns {Helper} The matched helper
+ */
+
+function findOne(predicate) {
+  predicate = prepareFilter(predicate);
+  return _.find(helperInstances, function (instance) {
+    return helperMatches(instance, predicate);
+  });
+}
+/**
+ * Finds matching direct children helpers
+ * @param {Function} predicate The function invoked per iteration
+ * @returns {Helper} The matched helper
+ */
+
+function findChildren(predicate) {
+  predicate = prepareFilter(predicate);
+  return _.filter(helperInstances, function (instance) {
+    return instance.id !== instanceId && instance.parentId && instance.parentId === instanceId && (predicate ? _.find([instance], predicate) : true);
+  });
+}
+
+/***/ }),
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

@@ -13,6 +13,7 @@
 
 <script>
 import Field from './components/Field';
+import { findAll, findOne, findChildren } from './libs/lookups';
 
 Vue.component('Field', Field);
 
@@ -21,6 +22,9 @@ export default {
     return Fliplet.Widget.getData();
   },
   methods: {
+    find: findAll,
+    findOne: findOne,
+    children: findChildren,
     async onSubmit() {
       var vm = this;
       var beforeSave;
