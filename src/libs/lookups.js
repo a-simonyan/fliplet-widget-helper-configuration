@@ -11,7 +11,7 @@ const instanceId = _.get(data, 'instanceId', '');
 function helperMatches(instance, predicate) {
   return instance.id !== instanceId
     && instance.isChildren
-        && (predicate ? _.find([instance], predicate) : true);
+    && (predicate ? _.find([instance], predicate) : true);
 }
 
 /**
