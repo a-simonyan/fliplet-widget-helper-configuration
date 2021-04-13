@@ -60,7 +60,9 @@ export default {
           data: JSON.parse(JSON.stringify(vm.fields))
         });
 
-        Fliplet.Studio.emit('widget-save-complete');
+        if (!Fliplet.Env.get('development')) {
+          Fliplet.Studio.emit('widget-save-complete');
+        }
       }).catch(function(err) {
         // eslint-disable-next-line no-console
         console.warn('Cannot save helper configuration', err);

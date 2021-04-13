@@ -13,9 +13,13 @@
       "vue.js",
       "lodash",
       "fliplet-core",
-      "fliplet-studio-ui"
+      "fliplet-studio-ui",
+      "jquery-ui",
+      "handlebars",
+      "bootstrap"
     ],
     "assets": [
+      "vendor/sortable.js",
       "dist/css/index.css",
       "dist/app.js"
     ]

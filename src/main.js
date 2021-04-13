@@ -10,7 +10,30 @@ if (Fliplet.Env.get('development')) {
         name: 'welcome',
         configuration: {
           dependencies: ['tinymce'],
-          fields: [{ name: 'name', type: 'text', label: 'Your name' }]
+          fields: [
+            { name: 'name', type: 'text', label: 'Your name' },
+            {
+              name: 'buttons',
+              label: 'Buttons',
+              type: 'group',
+              addLabel: 'Add button',
+              defaultValueField: 'title',
+              fields: [
+                {
+                  name: 'title',
+                  type: 'text',
+                  label: 'Button title',
+                  placeholder: 'Foo'
+                },
+                {
+                  type: 'provider',
+                  name: 'action',
+                  label: 'Choose an action to do when the button is pressed',
+                  package: 'com.fliplet.link'
+                }
+              ]
+            }
+          ]
         },
         fields: { name: 'Doe', type: 'welcome' },
         event: 'helper-instance-configure',
@@ -56,9 +79,17 @@ if (Fliplet.Env.get('development')) {
 
         return { value: opt };
       });
+    }
 
-      if (field.type === 'checkbox' && !Array.isArray(field.value)) {
-        field.value = [];
+    if (['checkbox', 'group'].indexOf(field.type) !== -1 && !Array.isArray(field.value)) {
+      field.value = [];
+    }
+  });
+
+  Vue.directive('sortable', {
+    inserted: function(el, binding) {
+      if (Sortable) {
+        new Sortable(el, binding.value || {});
       }
     }
   });
