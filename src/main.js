@@ -35,7 +35,28 @@ if (Fliplet.Env.get('development')) {
             }
           ]
         },
-        fields: { name: 'Doe', type: 'welcome' },
+        fields: {
+          name: 'Doe',
+          type: 'welcome',
+          'buttons': [
+            {
+              'title': '1',
+              'action': {
+                'action': 'screen',
+                'page': '2',
+                'transition': 'fade'
+              }
+            },
+            {
+              'title': '2',
+              'action': {
+                'action': 'screen',
+                'page': '1',
+                'transition': 'fade'
+              }
+            }
+          ]
+        },
         event: 'helper-instance-configure',
         id: 'com.fliplet.helper-configuration',
         package: 'com.fliplet.helper-configuration',
@@ -69,6 +90,20 @@ if (Fliplet.Env.get('development')) {
 
   fields.forEach((field) => {
     field.value = _.get(data.fields, field.name, field.default);
+
+    if (field.type === 'group') {
+      if (field.value && field.value.length) {
+        field.value = field.value.map((item) => {
+          const group = JSON.parse(JSON.stringify(field.fields));
+
+          group.forEach((groupItem) => {
+            groupItem.value = item[groupItem.name];
+          });
+
+          return group;
+        });
+      }
+    }
 
     // Normalize options
     if (Array.isArray(field.options)) {

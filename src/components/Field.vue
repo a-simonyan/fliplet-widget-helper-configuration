@@ -92,7 +92,7 @@ export default {
       if (this.$refs.fieldInstances) {
         await Promise.all(this.$refs.fieldInstances.map((field) => {
           return field.onSubmit().then((result) => {
-            this.value[field.index][field.name] = result;
+            _.find(this.value[field.index], { name: field.name }).value = result;
           });
         }));
 
@@ -110,7 +110,7 @@ export default {
       }
 
       if (!this.provider) {
-        return;
+        return Promise.resolve(this.value);
       }
 
       const op = new Promise((resolve) => {
