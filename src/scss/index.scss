@@ -77,11 +77,6 @@
   padding: 0;
 }
 
-.panel-heading:hover {
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
-}
-
 .panel-heading h4 {
   display: flex;
   padding: 10px 40px 10px 6px;
@@ -121,6 +116,15 @@
   border-right: 1px solid #999;
   opacity: 0.7;
   line-height: 18px;
+
+  &:hover, &:active, .fa {
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+  }
+}
+
+.panel-title-text {
+  cursor: pointer;
 }
 
 .panel-collapse {

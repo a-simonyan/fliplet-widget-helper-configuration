@@ -3,7 +3,7 @@
     <label v-if="label">{{ label }}</label>
     <p v-if="description">{{ description }}</p>
 
-    <div class="panel-group" v-if="type === 'group'" v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onAdd: onAdd, onUpdate: onSort, handle: '.screen-reorder-handle' }">
+    <div class="panel-group" v-if="type === 'group'" v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onUpdate: onSort, handle: '.screen-reorder-handle', draggable: '.panel' }">
 
       <div class="panel panel-default" v-bind:key="index" v-for="(fieldGroup, index) in value" ref="groupItems">
         <div class="panel-heading ui-sortable-handle">
@@ -12,14 +12,14 @@
               <i class="fa fa-ellipsis-v"></i><i class="fa fa-ellipsis-v"></i>
             </div>
             <span v-on:click.prevent="onToggleAccordion" class="fa fa-chevron-right chevron"></span>
-            <span v-on:click.prevent="onToggleAccordion" class="panel-title-text">{{defaultValueField || 'Untitled'}}</span>
+            <span v-on:click.prevent="onToggleAccordion" class="panel-title-text">{{ fieldGroup | panelHeading(headingFieldName) }}</span>
           </h4>
           <a href="#" v-on:click.prevent="onDeleteItem(index)"><span class="icon-delete fa fa-trash"></span></a>
         </div>
         <div class="panel-collapse collapse">
           <div class="panel-body">
             <div class="form">
-              <div>
+              <div v-if="panelContentIsVisible">
                 <template v-for="field in fieldGroup">
                   <field ref="fieldInstances" v-bind="field" v-bind:key="field.name" v-bind:index="index"></field>
                 </template>
@@ -28,7 +28,8 @@
           </div>
         </div>
       </div>
-      <br v-if="this.value && this.value.length"/>
+      <div v-if="!this.value || !this.value.length" v-html="emptyListPlaceholderHtml"></div>
+      <br v-if="this.value && this.value.length">
       <a class="btn btn-primary" v-on:click.prevent="addItem" href="#">{{ addLabel || 'Add' }}</a>
     </div>
     <input v-if="type === 'text'" type="text" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
@@ -48,6 +49,11 @@
 import { findAll, findOne, findChildren } from '../libs/lookups';
 
 export default {
+  data() {
+    return {
+      panelContentIsVisible: true
+    };
+  },
   props: [
     'type',
     'name',
@@ -64,12 +70,17 @@ export default {
     'package',
     'fields',
     'addLabel',
-    'index'
+    'index',
+    'headingFieldName',
+    'emptyListPlaceholderHtml'
   ],
   watch: {
     value(newValue) {
       if (this.$parent.type === 'group') {
         _.find(this.$parent.value[this.index], { name: this.name }).value = newValue;
+
+        this.$parent.onGroupValueChanged(this.name, newValue);
+
         return;
       }
 
@@ -87,6 +98,11 @@ export default {
       }
 
       return this.value;
+    },
+    onGroupValueChanged(name) {
+      if (name === this.headingFieldName) {
+        this.$forceUpdate();
+      }
     },
     async onSubmit() {
       if (this.$refs.fieldInstances) {
@@ -124,10 +140,13 @@ export default {
 
       return op;
     },
-    onToggleAccordion(event) {
-      // Close other items
+    collapseAccordions() {
       $('.panel-collapse').collapse('hide');
       $('.fa-chevron-down').addClass('fa-chevron-right').removeClass('fa-chevron-down');
+    },
+    onToggleAccordion(event) {
+      // Close other items
+      this.collapseAccordions();
 
       const $target = $(event.target).parent().find('.chevron');
 
@@ -146,14 +165,19 @@ export default {
       const item = JSON.parse(JSON.stringify(this.fields));
 
       this.value.push(item);
-
-      // TODO: update defaultValueField
     },
     onSort(event) {
+      // FIXME: not working as expected
       this.value.splice(event.newIndex, 0, this.value.splice(event.oldIndex, 1)[0]);
-    },
-    onAdd(event) {
-      console.log(event);
+
+      // FIXME: providers data must be retrieved before iframes disappear
+
+      // Hide panel content briefly so iframes properly get re-rendered
+      this.panelContentIsVisible = false;
+
+      this.$nextTick(() => {
+        this.panelContentIsVisible = true;
+      });
     }
   },
   mounted() {

@@ -1,3 +1,4 @@
+import { _ } from 'core-js';
 import Application from './Application.vue';
 
 // Sample data
@@ -17,13 +18,14 @@ if (Fliplet.Env.get('development')) {
               label: 'Buttons',
               type: 'group',
               addLabel: 'Add button',
-              defaultValueField: 'title',
+              headingFieldName: 'title',
+              emptyListPlaceholderHtml: '<p>Hello world</p>',
               fields: [
                 {
                   name: 'title',
                   type: 'text',
                   label: 'Button title',
-                  placeholder: 'Foo'
+                  placeholder: 'Sample button'
                 },
                 {
                   type: 'provider',
@@ -121,12 +123,9 @@ if (Fliplet.Env.get('development')) {
     }
   });
 
-  Vue.directive('sortable', {
-    inserted: function(el, binding) {
-      if (Sortable) {
-        new Sortable(el, binding.value || {});
-      }
-    }
+  Vue.filter('panelHeading', function(fields, name) {
+    const field = _.find(fields, { name }) || _.first(fields);
+    return field && (field.value || field.placeholder) || 'New field';
   });
 
   new Vue({

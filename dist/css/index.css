@@ -92,6 +92,9 @@
     cursor: -webkit-grab;
     cursor: -moz-grab; }
 
+.panel-title-text {
+  cursor: pointer; }
+
 .panel-collapse {
   opacity: 0; }
 
