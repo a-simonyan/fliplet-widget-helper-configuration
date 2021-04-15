@@ -3,7 +3,7 @@
     <label v-if="label">{{ label }}</label>
     <p v-if="description">{{ description }}</p>
 
-    <div class="panel-group" v-if="type === 'group'" v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onAdd: onAdd, onUpdate: onSort }">
+    <div class="panel-group" v-if="type === 'group'" v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onAdd: onAdd, onUpdate: onSort, handle: '.screen-reorder-handle' }">
 
       <div class="panel panel-default" v-bind:key="index" v-for="(fieldGroup, index) in value" ref="groupItems">
         <div class="panel-heading ui-sortable-handle">
