@@ -3,9 +3,9 @@
     <label v-if="label">{{ label }}</label>
     <p v-if="description">{{ description }}</p>
 
-    <div class="panel-group ui-sortable" v-if="type === 'group'">
+    <div class="panel-group ui-sortable" v-if="type === 'group' && panelIsVisible">
       <div v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onStart: onStart, onEnd: onEnd, onUpdate: onSort, handle: '.screen-reorder-handle' }">
-        <div class="panel panel-default" v-bind:key="index" v-for="(fieldGroup, index) in value" ref="groupItems">
+        <div class="panel panel-default" v-bind:key="index" v-for="(fieldGroup, index) in value">
           <div class="panel-heading ui-sortable-handle">
             <h4 class="panel-title" data-toggle="collapse">
               <div class="screen-reorder-handle">
@@ -19,7 +19,7 @@
           <div class="panel-collapse collapse">
             <div class="panel-body">
               <div class="form">
-                <div v-if="panelContentIsVisible">
+                <div>
                   <template v-for="field in fieldGroup">
                     <field ref="fieldInstances" v-bind="field" v-bind:key="field.name" v-bind:index="index"></field>
                   </template>
@@ -52,8 +52,8 @@ import { findAll, findOne, findChildren } from '../libs/lookups';
 export default {
   data() {
     return {
-      panelContentIsVisible: true,
-      providerPromise: undefined
+      providerPromise: undefined,
+      panelIsVisible: true
     };
   },
   props: [
@@ -171,11 +171,13 @@ export default {
       }));
     },
     onSort(event) {
-      // FIXME: not working as expected
-      this.value.splice(event.newIndex, 0, this.value.splice(event.oldIndex, 1)[0]);
-      // this.value.splice(event.newIndex, 0, this.value.splice(event.oldIndex, 1)[0]);
+      this.panelIsVisible = false;
 
-      // FIXME: providers data must be retrieved before iframes disappear
+      this.value.splice(event.newIndex, 0, this.value.splice(event.oldIndex, 1)[0]);
+
+      this.$nextTick(() => {
+        this.panelIsVisible = true;
+      });
     },
     initProvider() {
       if (this.type !== 'provider') {

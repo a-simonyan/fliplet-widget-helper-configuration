@@ -220,6 +220,13 @@ if (Fliplet.Env.get('development')) {
 
     return field && (field.value || field.placeholder) || 'New field';
   });
+  Vue.directive('sortable', {
+    inserted: function inserted(el, binding) {
+      if (Sortable) {
+        new Sortable(el, binding.value || {});
+      }
+    }
+  });
   new Vue({
     el: '#helper-configuration',
     render: function render(createElement) {
@@ -1354,38 +1361,33 @@ var render = function() {
     _vm._v(" "),
     _vm.description ? _c("p", [_vm._v(_vm._s(_vm.description))]) : _vm._e(),
     _vm._v(" "),
-    _vm.type === "group"
-      ? _c(
-          "div",
-          {
-            directives: [
-              {
-                name: "sortable",
-                rawName: "v-sortable",
-                value: {
-                  group: { name: "fields", pull: false },
-                  scrollSensitivity: 116,
-                  scrollSpeed: 10,
-                  onUpdate: _vm.onSort,
-                  handle: ".screen-reorder-handle",
-                  draggable: ".panel"
-                },
-                expression:
-                  "{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onUpdate: onSort, handle: '.screen-reorder-handle', draggable: '.panel' }"
-              }
-            ],
-            staticClass: "panel-group"
-          },
-          [
+    _vm.type === "group" && _vm.panelIsVisible
+      ? _c("div", { staticClass: "panel-group ui-sortable" }, [
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "sortable",
+                  rawName: "v-sortable",
+                  value: {
+                    group: { name: "fields", pull: false },
+                    scrollSensitivity: 116,
+                    scrollSpeed: 10,
+                    onStart: _vm.onStart,
+                    onEnd: _vm.onEnd,
+                    onUpdate: _vm.onSort,
+                    handle: ".screen-reorder-handle"
+                  },
+                  expression:
+                    "{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onStart: onStart, onEnd: onEnd, onUpdate: onSort, handle: '.screen-reorder-handle' }"
+                }
+              ]
+            },
             _vm._l(_vm.value, function(fieldGroup, index) {
               return _c(
                 "div",
-                {
-                  key: index,
-                  ref: "groupItems",
-                  refInFor: true,
-                  staticClass: "panel panel-default"
-                },
+                { key: index, staticClass: "panel panel-default" },
                 [
                   _c(
                     "div",
@@ -1454,64 +1456,62 @@ var render = function() {
                   _c("div", { staticClass: "panel-collapse collapse" }, [
                     _c("div", { staticClass: "panel-body" }, [
                       _c("div", { staticClass: "form" }, [
-                        _vm.panelContentIsVisible
-                          ? _c(
-                              "div",
-                              [
-                                _vm._l(fieldGroup, function(field) {
-                                  return [
-                                    _c(
-                                      "field",
-                                      _vm._b(
-                                        {
-                                          key: field.name,
-                                          ref: "fieldInstances",
-                                          refInFor: true,
-                                          attrs: { index: index }
-                                        },
-                                        "field",
-                                        field,
-                                        false
-                                      )
-                                    )
-                                  ]
-                                })
-                              ],
-                              2
-                            )
-                          : _vm._e()
+                        _c(
+                          "div",
+                          [
+                            _vm._l(fieldGroup, function(field) {
+                              return [
+                                _c(
+                                  "field",
+                                  _vm._b(
+                                    {
+                                      key: field.name,
+                                      ref: "fieldInstances",
+                                      refInFor: true,
+                                      attrs: { index: index }
+                                    },
+                                    "field",
+                                    field,
+                                    false
+                                  )
+                                )
+                              ]
+                            })
+                          ],
+                          2
+                        )
                       ])
                     ])
                   ])
                 ]
               )
             }),
-            _vm._v(" "),
-            !this.value || !this.value.length
-              ? _c("div", {
-                  domProps: { innerHTML: _vm._s(_vm.emptyListPlaceholderHtml) }
-                })
-              : _vm._e(),
-            _vm._v(" "),
-            this.value && this.value.length ? _c("br") : _vm._e(),
-            _vm._v(" "),
-            _c(
-              "a",
-              {
-                staticClass: "btn btn-primary",
-                attrs: { href: "#" },
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    return _vm.addItem($event)
-                  }
+            0
+          ),
+          _vm._v(" "),
+          !this.value || !this.value.length
+            ? _c("div", {
+                domProps: { innerHTML: _vm._s(_vm.emptyListPlaceholderHtml) }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          this.value && this.value.length ? _c("br") : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "a",
+            {
+              staticClass: "btn btn-primary",
+              attrs: { href: "#" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.addItem($event)
                 }
-              },
-              [_vm._v(_vm._s(_vm.addLabel || "Add"))]
-            )
-          ],
-          2
-        )
+              }
+            },
+            [_vm._v(_vm._s(_vm.addLabel || "Add"))]
+          )
+        ])
       : _vm._e(),
     _vm._v(" "),
     _vm.type === "text"
@@ -1785,11 +1785,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      panelContentIsVisible: true
+      providerPromise: undefined,
+      panelIsVisible: true
     };
   },
   props: ['type', 'name', 'label', 'html', 'value', 'ready', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'package', 'fields', 'addLabel', 'index', 'headingFieldName', 'emptyListPlaceholderHtml'],
@@ -1827,7 +1829,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee() {
-        var newValue, op;
+        var newValue;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -1857,7 +1859,7 @@ __webpack_require__.r(__webpack_exports__);
                 _this.$parent.fields[_this.name] = newValue;
 
               case 5:
-                if (_this.provider) {
+                if (_this.providerPromise) {
                   _context.next = 7;
                   break;
                 }
@@ -1865,18 +1867,11 @@ __webpack_require__.r(__webpack_exports__);
                 return _context.abrupt("return", Promise.resolve(_this.value));
 
               case 7:
-                op = new Promise(function (resolve) {
-                  _this.provider.then(function (result) {
-                    _this.value = result.data;
-                    resolve(_this.value);
-                  });
-                });
-
                 _this.provider.forwardSaveRequest();
 
-                return _context.abrupt("return", op);
+                return _context.abrupt("return", _this.providerPromise);
 
-              case 10:
+              case 9:
               case "end":
                 return _context.stop();
             }
@@ -1907,21 +1902,31 @@ __webpack_require__.r(__webpack_exports__);
       var item = JSON.parse(JSON.stringify(this.fields));
       this.value.push(item);
     },
+    onStart: function onStart() {
+      this.collapseAccordions();
+      this.onSubmit();
+    },
+    onEnd: function onEnd() {
+      Promise.all(this.$refs.fieldInstances.map(function (field) {
+        field.initProvider();
+      }));
+    },
     onSort: function onSort(event) {
       var _this2 = this;
 
-      // FIXME: not working as expected
-      this.value.splice(event.newIndex, 0, this.value.splice(event.oldIndex, 1)[0]); // FIXME: providers data must be retrieved before iframes disappear
-      // Hide panel content briefly so iframes properly get re-rendered
-
-      this.panelContentIsVisible = false;
+      this.panelIsVisible = false;
+      this.value.splice(event.newIndex, 0, this.value.splice(event.oldIndex, 1)[0]);
       this.$nextTick(function () {
-        _this2.panelContentIsVisible = true;
+        _this2.panelIsVisible = true;
       });
-    }
-  },
-  mounted: function mounted() {
-    if (this.type === 'provider') {
+    },
+    initProvider: function initProvider() {
+      var _this3 = this;
+
+      if (this.type !== 'provider') {
+        return;
+      }
+
       if (!this["package"]) {
         throw new Error('Package is required');
       }
@@ -1931,7 +1936,16 @@ __webpack_require__.r(__webpack_exports__);
         data: _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(this.value) === 'object' // Normalize Vue objects into plain JSON objects
         ? JSON.parse(JSON.stringify(this.value)) : this.value || {}
       });
+      this.providerPromise = new Promise(function (resolve) {
+        _this3.provider.then(function (result) {
+          _this3.value = result.data;
+          resolve(_this3.value);
+        });
+      });
     }
+  },
+  mounted: function mounted() {
+    this.initProvider();
 
     if (this.ready) {
       var ready = new Function(this.ready)();
