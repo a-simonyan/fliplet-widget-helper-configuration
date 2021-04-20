@@ -1914,6 +1914,8 @@ __webpack_require__.r(__webpack_exports__);
     onSort: function onSort(event) {
       var _this2 = this;
 
+      // Briefly hide the sortable panel to fix this issue
+      // https://github.com/sagalbot/vue-sortable/issues/27#issuecomment-350014812
       this.panelIsVisible = false;
       this.value.splice(event.newIndex, 0, this.value.splice(event.oldIndex, 1)[0]);
       this.$nextTick(function () {
