@@ -127,6 +127,14 @@ if (Fliplet.Env.get('development')) {
     return field && (field.value || field.placeholder) || 'New field';
   });
 
+  Vue.directive('sortable', {
+    inserted: function(el, binding) {
+      if (Sortable) {
+        new Sortable(el, binding.value || {});
+      }
+    }
+  });
+
   new Vue({
     el: '#helper-configuration',
     render: (createElement) => {

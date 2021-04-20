@@ -3,26 +3,27 @@
     <label v-if="label">{{ label }}</label>
     <p v-if="description">{{ description }}</p>
 
-    <div class="panel-group" v-if="type === 'group'" v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onUpdate: onSort, handle: '.screen-reorder-handle', draggable: '.panel' }">
-
-      <div class="panel panel-default" v-bind:key="index" v-for="(fieldGroup, index) in value" ref="groupItems">
-        <div class="panel-heading ui-sortable-handle">
-          <h4 class="panel-title" data-toggle="collapse">
-            <div class="screen-reorder-handle">
-              <i class="fa fa-ellipsis-v"></i><i class="fa fa-ellipsis-v"></i>
-            </div>
-            <span v-on:click.prevent="onToggleAccordion" class="fa fa-chevron-right chevron"></span>
-            <span v-on:click.prevent="onToggleAccordion" class="panel-title-text">{{ fieldGroup | panelHeading(headingFieldName) }}</span>
-          </h4>
-          <a href="#" v-on:click.prevent="onDeleteItem(index)"><span class="icon-delete fa fa-trash"></span></a>
-        </div>
-        <div class="panel-collapse collapse">
-          <div class="panel-body">
-            <div class="form">
-              <div v-if="panelContentIsVisible">
-                <template v-for="field in fieldGroup">
-                  <field ref="fieldInstances" v-bind="field" v-bind:key="field.name" v-bind:index="index"></field>
-                </template>
+    <div class="panel-group ui-sortable" v-if="type === 'group'">
+      <div v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onStart: onStart, onEnd: onEnd, onUpdate: onSort, handle: '.screen-reorder-handle' }">
+        <div class="panel panel-default" v-bind:key="index" v-for="(fieldGroup, index) in value" ref="groupItems">
+          <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title" data-toggle="collapse">
+              <div class="screen-reorder-handle">
+                <i class="fa fa-ellipsis-v"></i><i class="fa fa-ellipsis-v"></i>
+              </div>
+              <span v-on:click.prevent="onToggleAccordion" class="fa fa-chevron-right chevron"></span>
+              <span v-on:click.prevent="onToggleAccordion" class="panel-title-text">{{ fieldGroup | panelHeading(headingFieldName) }}</span>
+            </h4>
+            <a href="#" v-on:click.prevent="onDeleteItem(index)"><span class="icon-delete fa fa-trash"></span></a>
+          </div>
+          <div class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="form">
+                <div v-if="panelContentIsVisible">
+                  <template v-for="field in fieldGroup">
+                    <field ref="fieldInstances" v-bind="field" v-bind:key="field.name" v-bind:index="index"></field>
+                  </template>
+                </div>
               </div>
             </div>
           </div>
@@ -51,7 +52,8 @@ import { findAll, findOne, findChildren } from '../libs/lookups';
 export default {
   data() {
     return {
-      panelContentIsVisible: true
+      panelContentIsVisible: true,
+      providerPromise: undefined
     };
   },
   props: [
@@ -125,20 +127,13 @@ export default {
         this.$parent.fields[this.name] = newValue;
       }
 
-      if (!this.provider) {
+      if (!this.providerPromise) {
         return Promise.resolve(this.value);
       }
 
-      const op = new Promise((resolve) => {
-        this.provider.then((result) => {
-          this.value = result.data;
-          resolve(this.value);
-        });
-      });
-
       this.provider.forwardSaveRequest();
 
-      return op;
+      return this.providerPromise;
     },
     collapseAccordions() {
       $('.panel-collapse').collapse('hide');
@@ -166,22 +161,27 @@ export default {
 
       this.value.push(item);
     },
+    onStart() {
+      this.collapseAccordions();
+      this.onSubmit();
+    },
+    onEnd() {
+      Promise.all(this.$refs.fieldInstances.map((field) => {
+        field.initProvider();
+      }));
+    },
     onSort(event) {
       // FIXME: not working as expected
       this.value.splice(event.newIndex, 0, this.value.splice(event.oldIndex, 1)[0]);
+      // this.value.splice(event.newIndex, 0, this.value.splice(event.oldIndex, 1)[0]);
 
       // FIXME: providers data must be retrieved before iframes disappear
+    },
+    initProvider() {
+      if (this.type !== 'provider') {
+        return;
+      }
 
-      // Hide panel content briefly so iframes properly get re-rendered
-      this.panelContentIsVisible = false;
-
-      this.$nextTick(() => {
-        this.panelContentIsVisible = true;
-      });
-    }
-  },
-  mounted() {
-    if (this.type === 'provider') {
       if (!this.package) {
         throw new Error('Package is required');
       }
@@ -193,7 +193,17 @@ export default {
           ? JSON.parse(JSON.stringify(this.value))
           : (this.value || {})
       });
+
+      this.providerPromise = new Promise((resolve) => {
+        this.provider.then((result) => {
+          this.value = result.data;
+          resolve(this.value);
+        });
+      });
     }
+  },
+  mounted() {
+    this.initProvider();
 
     if (this.ready) {
       const ready = new Function(this.ready)();
