@@ -53,14 +53,21 @@ export default {
       }
 
       beforeSave.then(function() {
+        const data = JSON.parse(JSON.stringify(vm.fields));
+
         Fliplet.Studio.emit('page-preview-send-event', {
           type: 'helper-configuration-updated',
           // remove reactivity so objects are properly converted
           // into data that can be transmitted
-          data: JSON.parse(JSON.stringify(vm.fields))
+          data: data
         });
 
-        Fliplet.Studio.emit('widget-save-complete');
+        if (!Fliplet.Env.get('development')) {
+          Fliplet.Studio.emit('widget-save-complete');
+        } else {
+          // eslint-disable-next-line no-console
+          console.debug(data);
+        }
       }).catch(function(err) {
         // eslint-disable-next-line no-console
         console.warn('Cannot save helper configuration', err);

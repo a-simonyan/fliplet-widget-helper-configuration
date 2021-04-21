@@ -6,7 +6,9 @@
     "plugin:vue/essential"
   ],
   "globals": {
-    "Vue": true
+    "Vue": true,
+    "Modernizr": "readonly",
+    "Sortable": "readonly"
   },
   "rules": {
     "no-new": 0,

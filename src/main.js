@@ -10,9 +10,54 @@ if (Fliplet.Env.get('development')) {
         name: 'welcome',
         configuration: {
           dependencies: ['tinymce'],
-          fields: [{ name: 'name', type: 'text', label: 'Your name' }]
+          fields: [
+            { name: 'name', type: 'text', label: 'Your name' },
+            {
+              name: 'buttons',
+              label: 'Buttons',
+              type: 'group',
+              addLabel: 'Add button',
+              headingFieldName: 'title',
+              emptyListPlaceholderHtml: '<p>Hello world</p>',
+              fields: [
+                {
+                  name: 'title',
+                  type: 'text',
+                  label: 'Button title',
+                  placeholder: 'Sample button'
+                },
+                {
+                  type: 'provider',
+                  name: 'action',
+                  label: 'Choose an action to do when the button is pressed',
+                  package: 'com.fliplet.link'
+                }
+              ]
+            }
+          ]
         },
-        fields: { name: 'Doe', type: 'welcome' },
+        fields: {
+          name: 'Doe',
+          type: 'welcome',
+          'buttons': [
+            {
+              'title': '1',
+              'action': {
+                'action': 'screen',
+                'page': '2',
+                'transition': 'fade'
+              }
+            },
+            {
+              'title': '2',
+              'action': {
+                'action': 'screen',
+                'page': '1',
+                'transition': 'fade'
+              }
+            }
+          ]
+        },
         event: 'helper-instance-configure',
         id: 'com.fliplet.helper-configuration',
         package: 'com.fliplet.helper-configuration',
@@ -47,6 +92,20 @@ if (Fliplet.Env.get('development')) {
   fields.forEach((field) => {
     field.value = _.get(data.fields, field.name, field.default);
 
+    if (field.type === 'group') {
+      if (field.value && field.value.length) {
+        field.value = field.value.map((item) => {
+          const group = JSON.parse(JSON.stringify(field.fields));
+
+          group.forEach((groupItem) => {
+            groupItem.value = item[groupItem.name];
+          });
+
+          return group;
+        });
+      }
+    }
+
     // Normalize options
     if (Array.isArray(field.options)) {
       field.options = field.options.map((opt) => {
@@ -56,9 +115,23 @@ if (Fliplet.Env.get('development')) {
 
         return { value: opt };
       });
+    }
 
-      if (field.type === 'checkbox' && !Array.isArray(field.value)) {
-        field.value = [];
+    if (['checkbox', 'group'].indexOf(field.type) !== -1 && !Array.isArray(field.value)) {
+      field.value = [];
+    }
+  });
+
+  Vue.filter('panelHeading', function(fields, name) {
+    const field = _.find(fields, { name }) || _.first(fields);
+
+    return field && (field.value || field.placeholder) || 'New field';
+  });
+
+  Vue.directive('sortable', {
+    inserted: function(el, binding) {
+      if (Sortable) {
+        new Sortable(el, binding.value || {});
       }
     }
   });
