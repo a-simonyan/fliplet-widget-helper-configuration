@@ -124,6 +124,7 @@ if (Fliplet.Env.get('development')) {
 
   Vue.filter('panelHeading', function(fields, name) {
     const field = _.find(fields, { name }) || _.first(fields);
+
     return field && (field.value || field.placeholder) || 'New field';
   });
 
