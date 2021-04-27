@@ -43,6 +43,10 @@
     </div>
     <div v-if="html" v-html="html"></div>
     <div v-if="type === 'provider'" class="provider"></div>
+    <template v-if="warning">
+      <br />
+      <p class="alert alert-warning" v-html="warning"></p>
+    </template>
   </div>
 </template>
 
@@ -63,6 +67,8 @@ export default {
     'html',
     'value',
     'ready',
+    'change',
+    'warning',
     'placeholder',
     'default',
     'description',
@@ -87,6 +93,11 @@ export default {
       }
 
       this.$parent.fields[this.name] = newValue;
+
+      if (this.change) {
+        const change = new Function(this.change)();
+        change.call(this, newValue);
+      }
     }
   },
   methods: {
