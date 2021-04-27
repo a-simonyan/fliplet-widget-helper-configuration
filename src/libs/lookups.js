@@ -70,3 +70,21 @@ export function findChildren(predicate) {
       && (predicate ? _.find([instance], predicate) : true);
   });
 }
+
+/**
+ * Finds matching helper instances
+ * @param {Function} predicate The function invoked per iteration
+ * @returns {Array} The matched helpers
+ */
+Fliplet.Helper.find = function(predicate) {
+  return _.filter(helperInstances, predicate);
+};
+
+/**
+ * Finds matching helper instances
+ * @param {Function} predicate The function invoked per iteration
+ * @returns {Helper} The matched helpers
+ */
+Fliplet.Helper.findOne = function(predicate) {
+  return _.find(helperInstances, predicate);
+};
