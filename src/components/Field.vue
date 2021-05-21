@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group">
+  <div class="form-group" :data-field="name">
     <label v-if="label">{{ label }}</label>
     <p v-if="description">{{ description }}</p>
 
