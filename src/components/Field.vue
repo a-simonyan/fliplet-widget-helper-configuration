@@ -151,14 +151,17 @@ export default {
       $('.fa-chevron-down').addClass('fa-chevron-right').removeClass('fa-chevron-down');
     },
     onToggleAccordion(event) {
+      const $target = $(event.target).parent().find('.chevron');
+      const isExpanded = $target.hasClass('fa-chevron-down');
+
       // Close other items
       this.collapseAccordions();
 
-      const $target = $(event.target).parent().find('.chevron');
-
-      // Expand this item
-      $target.closest('.panel').find('.panel-collapse').collapse('show');
-      $target.addClass('fa-chevron-down').removeClass('fa-chevron-right');
+      if (!isExpanded) {
+        // Expand this item
+        $target.closest('.panel').find('.panel-collapse').collapse('show');
+        $target.addClass('fa-chevron-down').removeClass('fa-chevron-right');
+      }
     },
     onDeleteItem(index) {
       this.value.splice(index, 1);
