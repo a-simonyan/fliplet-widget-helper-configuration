@@ -1915,12 +1915,16 @@ __webpack_require__.r(__webpack_exports__);
       $('.fa-chevron-down').addClass('fa-chevron-right').removeClass('fa-chevron-down');
     },
     onToggleAccordion: function onToggleAccordion(event) {
-      // Close other items
-      this.collapseAccordions();
-      var $target = $(event.target).parent().find('.chevron'); // Expand this item
+      var $target = $(event.target).parent().find('.chevron');
+      var isExpanded = $target.hasClass('fa-chevron-down'); // Close other items
 
-      $target.closest('.panel').find('.panel-collapse').collapse('show');
-      $target.addClass('fa-chevron-down').removeClass('fa-chevron-right');
+      this.collapseAccordions();
+
+      if (!isExpanded) {
+        // Expand this item
+        $target.closest('.panel').find('.panel-collapse').collapse('show');
+        $target.addClass('fa-chevron-down').removeClass('fa-chevron-right');
+      }
     },
     onDeleteItem: function onDeleteItem(index) {
       this.value.splice(index, 1);
