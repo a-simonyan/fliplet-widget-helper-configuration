@@ -15,7 +15,7 @@ if (Fliplet.Env.get('development')) {
             {
               name: 'buttons',
               label: 'Buttons',
-              type: 'group',
+              type: 'list',
               addLabel: 'Add button',
               headingFieldName: 'title',
               emptyListPlaceholderHtml: '<p>Hello world</p>',
@@ -92,16 +92,16 @@ if (Fliplet.Env.get('development')) {
   fields.forEach((field) => {
     field.value = _.get(data.fields, field.name, field.default);
 
-    if (field.type === 'group') {
+    if (field.type === 'list') {
       if (field.value && field.value.length) {
         field.value = field.value.map((item) => {
-          const group = JSON.parse(JSON.stringify(field.fields));
+          const list = JSON.parse(JSON.stringify(field.fields));
 
-          group.forEach((groupItem) => {
-            groupItem.value = item[groupItem.name];
+          list.forEach((listItem) => {
+            listItem.value = item[listItem.name];
           });
 
-          return group;
+          return list;
         });
       }
     }
@@ -117,7 +117,7 @@ if (Fliplet.Env.get('development')) {
       });
     }
 
-    if (['checkbox', 'group'].indexOf(field.type) !== -1 && !Array.isArray(field.value)) {
+    if (['checkbox', 'list'].indexOf(field.type) !== -1 && !Array.isArray(field.value)) {
       field.value = [];
     }
   });

@@ -3,16 +3,16 @@
     <label v-if="label">{{ label }}</label>
     <p v-if="description">{{ description }}</p>
 
-    <div class="panel-group ui-sortable" v-if="type === 'group' && panelIsVisible">
+    <div class="panel-group ui-sortable" v-if="type === 'list' && panelIsVisible">
       <div v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onStart: onStart, onEnd: onEnd, onUpdate: onSort, handle: '.screen-reorder-handle' }">
-        <div class="panel panel-default" v-bind:key="index" v-for="(fieldGroup, index) in value">
+        <div class="panel panel-default" v-bind:key="index" v-for="(fieldList, index) in value">
           <div class="panel-heading ui-sortable-handle">
             <h4 class="panel-title" data-toggle="collapse">
               <div class="screen-reorder-handle">
                 <i class="fa fa-ellipsis-v"></i><i class="fa fa-ellipsis-v"></i>
               </div>
               <span v-on:click.prevent="onToggleAccordion" class="fa fa-chevron-right chevron"></span>
-              <span v-on:click.prevent="onToggleAccordion" class="panel-title-text">{{ fieldGroup | panelHeading(headingFieldName) }}</span>
+              <span v-on:click.prevent="onToggleAccordion" class="panel-title-text">{{ fieldList | panelHeading(headingFieldName) }}</span>
             </h4>
             <a href="#" v-on:click.prevent="onDeleteItem(index)"><span class="icon-delete fa fa-trash"></span></a>
           </div>
@@ -20,7 +20,7 @@
             <div class="panel-body">
               <div class="form">
                 <div>
-                  <template v-for="field in fieldGroup">
+                  <template v-for="field in fieldList">
                     <field ref="fieldInstances" v-bind="field" v-bind:key="field.name" v-bind:index="index"></field>
                   </template>
                 </div>
@@ -84,10 +84,10 @@ export default {
   ],
   watch: {
     value(newValue) {
-      if (this.$parent.type === 'group') {
+      if (this.$parent.type === 'list') {
         _.find(this.$parent.value[this.index], { name: this.name }).value = newValue;
 
-        this.$parent.onGroupValueChanged(this.name, newValue);
+        this.$parent.onListValueChanged(this.name, newValue);
 
         return;
       }
@@ -112,7 +112,7 @@ export default {
 
       return this.value;
     },
-    onGroupValueChanged(name) {
+    onListValueChanged(name) {
       if (name === this.headingFieldName) {
         this.$forceUpdate();
       }
