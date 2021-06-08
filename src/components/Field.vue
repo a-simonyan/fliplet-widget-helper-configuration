@@ -41,8 +41,14 @@
         <input :name="name" :type="type" :value="option.value" v-model="value" /> {{ option.label || option.value }}
       </label>
     </div>
-    <div v-if="html" v-html="html"></div>
-    <div v-if="type === 'provider'" class="provider"></div>
+    <template v-if="!isFullScreenProvider">
+      <div v-if="html" v-html="html"></div>
+    </template>
+    <div v-if="type === 'provider'" class="provider">
+      <template v-if="isFullScreenProvider">
+        <div v-html="providerHtml"></div>
+      </template>
+    </div>
     <template v-if="warning">
       <br />
       <p class="alert alert-warning" v-html="warning"></p>
@@ -56,8 +62,10 @@ import { findAll, findOne, findChildren } from '../libs/lookups';
 export default {
   data() {
     return {
+      eventsBound: false,
       providerPromise: undefined,
-      panelIsVisible: true
+      panelIsVisible: true,
+      isFullScreenProvider: this.type === 'provider' && this.mode === 'full-screen'
     };
   },
   props: [
@@ -79,9 +87,15 @@ export default {
     'fields',
     'addLabel',
     'index',
+    'mode',
     'headingFieldName',
     'emptyListPlaceholderHtml'
   ],
+  computed: {
+    providerHtml() {
+      return Handlebars.compile(this.html)(this);
+    }
+  },
   watch: {
     value(newValue) {
       if (this.$parent.type === 'list') {
@@ -204,8 +218,31 @@ export default {
         throw new Error('Package is required');
       }
 
+      const $provider = $(this.$el).find('.provider');
+
+      if (this.isFullScreenProvider) {
+        if (this.eventsBound) {
+          return;
+        }
+
+        $provider.find('[data-open-provider]').click((event) => {
+          event.preventDefault();
+          this.openProvider();
+          window.currentProvider = this.provider;
+        });
+
+        this.eventsBound = true;
+
+        return;
+      }
+
+      this.openProvider($provider);
+    },
+    openProvider(target) {
+      console.log('opening with value', JSON.parse(JSON.stringify(this.value)));
+
       this.provider = Fliplet.Widget.open(this.package, {
-        selector: $(this.$el).find('.provider')[0],
+        selector: target ? target[0] : undefined,
         data: typeof this.value === 'object'
           // Normalize Vue objects into plain JSON objects
           ? JSON.parse(JSON.stringify(this.value))
@@ -214,7 +251,27 @@ export default {
 
       this.providerPromise = new Promise((resolve) => {
         this.provider.then((result) => {
-          this.value = result.data;
+          console.log('GOT', result.data);
+
+          if (_.isObject(result.data) && !Array.isArray(result.data)) {
+            this.value = _.omit(result.data, [
+              'package', 'version'
+            ]);
+          } else {
+            this.value = result.data;
+          }
+
+          console.log('New value', this.value);
+
+          if (this.isFullScreenProvider) {
+            delete window.currentProvider;
+            delete this.provider;
+
+            this.providerPromise = undefined;
+
+            this.initProvider();
+          }
+
           resolve(this.value);
         });
       });
