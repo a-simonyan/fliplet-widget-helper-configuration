@@ -109,6 +109,13 @@ if (Fliplet.Env.get('development')) {
             type: 'text',
             label: 'Your name'
           }, {
+            type: 'provider',
+            name: 'files',
+            label: 'Open file picker',
+            "package": 'com.fliplet.file-picker',
+            mode: 'full-screen',
+            html: '<button data-open-provider>Open</button> You selected {{ value.length }} files'
+          }, {
             name: 'buttons',
             label: 'Buttons',
             type: 'list',
@@ -415,13 +422,22 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_2__["default"]
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                if (!window.currentProvider) {
+                  _context.next = 3;
+                  break;
+                }
+
+                window.currentProvider.forwardSaveRequest();
+                return _context.abrupt("return");
+
+              case 3:
                 vm = _this;
-                _context.next = 3;
+                _context.next = 6;
                 return Promise.all(_this.$refs.fieldInstances.map(function (field) {
                   return field.onSubmit();
                 }));
 
-              case 3:
+              case 6:
                 if (_this.configuration.beforeSave) {
                   beforeSaveFunction = new Function(_this.configuration.beforeSave)();
 
@@ -466,7 +482,7 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_2__["default"]
                   });
                 });
 
-              case 6:
+              case 9:
               case "end":
                 return _context.stop();
             }
@@ -1698,12 +1714,29 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
-      _vm.html
-        ? _c("div", { domProps: { innerHTML: _vm._s(_vm.html) } })
+      !_vm.isFullScreenProvider
+        ? [
+            _vm.html
+              ? _c("div", { domProps: { innerHTML: _vm._s(_vm.html) } })
+              : _vm._e()
+          ]
         : _vm._e(),
       _vm._v(" "),
       _vm.type === "provider"
-        ? _c("div", { staticClass: "provider" })
+        ? _c(
+            "div",
+            { staticClass: "provider" },
+            [
+              _vm.isFullScreenProvider
+                ? [
+                    _c("div", {
+                      domProps: { innerHTML: _vm._s(_vm.providerHtml) }
+                    })
+                  ]
+                : _vm._e()
+            ],
+            2
+          )
         : _vm._e(),
       _vm._v(" "),
       _vm.warning
@@ -1812,15 +1845,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      eventsBound: false,
       providerPromise: undefined,
-      panelIsVisible: true
+      panelIsVisible: true,
+      isFullScreenProvider: this.type === 'provider' && this.mode === 'full-screen'
     };
   },
-  props: ['type', 'name', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'package', 'fields', 'addLabel', 'index', 'headingFieldName', 'emptyListPlaceholderHtml'],
+  props: ['type', 'name', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'package', 'fields', 'addLabel', 'index', 'mode', 'headingFieldName', 'emptyListPlaceholderHtml'],
+  computed: {
+    providerHtml: function providerHtml() {
+      return Handlebars.compile(this.html)(this);
+    }
+  },
   watch: {
     value: function value(newValue) {
       if (this.$parent.type === 'list') {
@@ -1968,15 +2014,59 @@ __webpack_require__.r(__webpack_exports__);
         throw new Error('Package is required');
       }
 
+      var $provider = $(this.$el).find('.provider');
+
+      if (this.isFullScreenProvider) {
+        if (this.eventsBound) {
+          return;
+        }
+
+        $provider.find('[data-open-provider]').click(function (event) {
+          event.preventDefault();
+
+          _this3.openProvider();
+
+          window.currentProvider = _this3.provider;
+        });
+        this.eventsBound = true;
+        return;
+      }
+
+      this.openProvider($provider);
+    },
+    openProvider: function openProvider(target) {
+      var _this4 = this;
+
+      var value = this.value || {}; // File picker a different input from the original output
+
+      if (this["package"] === 'com.fliplet.file-picker' && Array.isArray(value)) {
+        value = {
+          selectFiles: value
+        };
+      }
+
       this.provider = Fliplet.Widget.open(this["package"], {
-        selector: $(this.$el).find('.provider')[0],
-        data: _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(this.value) === 'object' // Normalize Vue objects into plain JSON objects
-        ? JSON.parse(JSON.stringify(this.value)) : this.value || {}
+        selector: target ? target[0] : undefined,
+        data: _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(value) === 'object' // Normalize Vue objects into plain JSON objects
+        ? JSON.parse(JSON.stringify(value)) : value
       });
       this.providerPromise = new Promise(function (resolve) {
-        _this3.provider.then(function (result) {
-          _this3.value = result.data;
-          resolve(_this3.value);
+        _this4.provider.then(function (result) {
+          if (_.isObject(result.data) && !Array.isArray(result.data)) {
+            _this4.value = _.omit(result.data, ['package', 'version']);
+          } else {
+            _this4.value = result.data;
+          }
+
+          if (_this4.isFullScreenProvider) {
+            delete window.currentProvider;
+            delete _this4.provider;
+            _this4.providerPromise = undefined;
+
+            _this4.initProvider();
+          }
+
+          resolve(_this4.value);
         });
       });
     }

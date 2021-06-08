@@ -239,20 +239,23 @@ export default {
       this.openProvider($provider);
     },
     openProvider(target) {
-      console.log('opening with value', JSON.parse(JSON.stringify(this.value)));
+      let value = this.value || {};
+
+      // File picker a different input from the original output
+      if (this.package === 'com.fliplet.file-picker' && Array.isArray(value)) {
+        value = { selectFiles: value };
+      }
 
       this.provider = Fliplet.Widget.open(this.package, {
         selector: target ? target[0] : undefined,
-        data: typeof this.value === 'object'
+        data: typeof value === 'object'
           // Normalize Vue objects into plain JSON objects
-          ? JSON.parse(JSON.stringify(this.value))
-          : (this.value || {})
+          ? JSON.parse(JSON.stringify(value))
+          : value
       });
 
       this.providerPromise = new Promise((resolve) => {
         this.provider.then((result) => {
-          console.log('GOT', result.data);
-
           if (_.isObject(result.data) && !Array.isArray(result.data)) {
             this.value = _.omit(result.data, [
               'package', 'version'
@@ -260,8 +263,6 @@ export default {
           } else {
             this.value = result.data;
           }
-
-          console.log('New value', this.value);
 
           if (this.isFullScreenProvider) {
             delete window.currentProvider;
