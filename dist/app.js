@@ -2037,7 +2037,7 @@ __webpack_require__.r(__webpack_exports__);
     openProvider: function openProvider(target) {
       var _this4 = this;
 
-      var value = this.value || {}; // File picker a different input from the original output
+      var value = this.value || {}; // File picker wants a slightly different input from the original output
 
       if (this["package"] === 'com.fliplet.file-picker' && Array.isArray(value)) {
         value = {

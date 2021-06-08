@@ -241,7 +241,7 @@ export default {
     openProvider(target) {
       let value = this.value || {};
 
-      // File picker a different input from the original output
+      // File picker wants a slightly different input from the original output
       if (this.package === 'com.fliplet.file-picker' && Array.isArray(value)) {
         value = { selectFiles: value };
       }
