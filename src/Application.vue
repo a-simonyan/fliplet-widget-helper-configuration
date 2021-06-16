@@ -26,6 +26,11 @@ export default {
     findOne: findOne,
     children: findChildren,
     async onSubmit() {
+      if (window.currentProvider) {
+        window.currentProvider.forwardSaveRequest();
+        return;
+      }
+
       var vm = this;
       var beforeSave;
 

@@ -13,6 +13,14 @@ if (Fliplet.Env.get('development')) {
           fields: [
             { name: 'name', type: 'text', label: 'Your name' },
             {
+              type: 'provider',
+              name: 'files',
+              label: 'Open file picker',
+              package: 'com.fliplet.file-picker',
+              mode: 'full-screen',
+              html: '<button data-open-provider>Open</button> You selected {{ value.length }} files'
+            },
+            {
               name: 'buttons',
               label: 'Buttons',
               type: 'list',
