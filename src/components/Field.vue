@@ -1,58 +1,76 @@
 <template>
-  <div class="form-group" :data-field="name">
-    <label v-if="label">{{ label }}</label>
-    <p v-if="description">{{ description }}</p>
-
-    <div class="panel-group ui-sortable" v-if="type === 'list' && panelIsVisible">
-      <div v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onStart: onStart, onEnd: onEnd, onUpdate: onSort, handle: '.screen-reorder-handle' }">
-        <div class="panel panel-default" v-bind:key="index" v-for="(fieldList, index) in value">
-          <div class="panel-heading ui-sortable-handle">
-            <h4 class="panel-title" data-toggle="collapse">
-              <div class="screen-reorder-handle">
-                <i class="fa fa-ellipsis-v"></i><i class="fa fa-ellipsis-v"></i>
+  <div class="form-group clearfix" :data-field="name">
+    <div class="col-sm-4 control-label">
+      <label v-if="label">{{ label }}</label>
+      <p v-if="description" class="help-block">{{ description }}</p>
+    </div>
+    <div class="col-sm-8">
+      <div v-if="type === 'list' && panelIsVisible" class="list-field">
+        <div class="panel-group ui-sortable">
+          <div v-sortable="{ group: { name: 'fields', pull: false }, scrollSensitivity: 116, scrollSpeed: 10, onStart: onStart, onEnd: onEnd, onUpdate: onSort, handle: '.screen-reorder-handle' }">
+            <div class="panel panel-default" v-bind:key="index" v-for="(fieldList, index) in value">
+              <div class="panel-heading ui-sortable-handle">
+                <h4 class="panel-title" data-toggle="collapse">
+                  <div class="screen-reorder-handle">
+                    <i class="fa fa-ellipsis-v"></i><i class="fa fa-ellipsis-v"></i>
+                  </div>
+                  <span v-on:click.prevent="onToggleAccordion" class="fa fa-chevron-right chevron"></span>
+                  <span v-on:click.prevent="onToggleAccordion" class="panel-title-text">{{ fieldList | panelHeading(headingFieldName) }}</span>
+                </h4>
+                <a href="#" v-on:click.prevent="onDeleteItem(index)"><span class="icon-delete fa fa-trash"></span></a>
               </div>
-              <span v-on:click.prevent="onToggleAccordion" class="fa fa-chevron-right chevron"></span>
-              <span v-on:click.prevent="onToggleAccordion" class="panel-title-text">{{ fieldList | panelHeading(headingFieldName) }}</span>
-            </h4>
-            <a href="#" v-on:click.prevent="onDeleteItem(index)"><span class="icon-delete fa fa-trash"></span></a>
-          </div>
-          <div class="panel-collapse collapse">
-            <div class="panel-body">
-              <div class="form">
-                <div>
-                  <template v-for="field in fieldList">
-                    <field ref="fieldInstances" v-bind="field" v-bind:key="field.name" v-bind:index="index"></field>
-                  </template>
+              <div class="panel-collapse collapse">
+                <div class="panel-body">
+                  <div class="form">
+                    <div>
+                      <template v-for="field in fieldList">
+                        <field ref="fieldInstances" v-bind="field" v-bind:key="field.name" v-bind:index="index"></field>
+                      </template>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <div v-if="!this.value || !this.value.length" v-html="emptyListPlaceholderHtml"></div>
+        <p>
+          <a class="btn btn-default" v-on:click.prevent="addItem" href="#">{{ addLabel || 'Add' }}</a>
+          <a v-if="this.value && this.value.length" class="btn btn-link expand-items" v-on:click.prevent="onToggleAccordions" href="#">Expand/Collapse All</a>
+        </p>
       </div>
-      <div v-if="!this.value || !this.value.length" v-html="emptyListPlaceholderHtml"></div>
-      <br v-if="this.value && this.value.length">
-      <a class="btn btn-primary" v-on:click.prevent="addItem" href="#">{{ addLabel || 'Add' }}</a>
-    </div>
-    <input v-if="type === 'text'" type="text" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
-    <input v-if="type === 'email'" type="email" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
-    <textarea v-if="type === 'textarea'" class="form-control" v-model="value" :placeholder="placeholder" :required="required" :rows="rows || 4"></textarea>
-    <div class="options" v-if="options && ['radio', 'checkbox'].indexOf(type) !== -1">
-      <label v-bind:key="option.value" v-for="option in options">
-        <input :name="name" :type="type" :value="option.value" v-model="value" /> {{ option.label || option.value }}
-      </label>
-    </div>
-    <template v-if="!isFullScreenProvider">
-      <div v-if="html" v-html="html"></div>
-    </template>
-    <div v-if="type === 'provider'" class="provider">
-      <template v-if="isFullScreenProvider">
-        <div v-html="providerHtml"></div>
+      <input v-if="type === 'text'" type="text" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
+      <input v-if="type === 'email'" type="email" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
+      <textarea v-if="type === 'textarea'" class="form-control" v-model="value" :placeholder="placeholder" :required="required" :rows="rows || 4"></textarea>
+      <template v-if="options && type === 'radio'">
+        <div v-bind:key="option.value" v-for="option in options" class="radio radio-icon">
+          <input :name="name" :id="name + '_' + option.value" type="radio" :value="option.value" v-model="value">
+          <label :for="name + '_' + option.value">
+            <span class="check"><i class="fa fa-circle"></i></span> {{ option.label || option.value }}
+          </label>
+        </div>
+      </template>
+      <template v-if="options && type === 'checkbox'">
+        <div v-bind:key="option.value" v-for="option in options" class="checkbox checkbox-icon">
+          <input :name="name" :id="name + '_' + option.value" type="checkbox" :value="option.value" v-model="value">
+          <label :for="name + '_' + option.value">
+            <span class="check"><i class="fa fa-check"></i></span> {{ option.label || option.value }}
+          </label>
+        </div>
+      </template>
+      <template v-if="!isFullScreenProvider">
+        <div v-if="html" v-html="html"></div>
+      </template>
+      <div v-if="type === 'provider'" class="provider">
+        <template v-if="isFullScreenProvider">
+          <div v-html="providerHtml"></div>
+        </template>
+      </div>
+      <template v-if="warning">
+        <br />
+        <p class="alert alert-warning" v-html="warning"></p>
       </template>
     </div>
-    <template v-if="warning">
-      <br />
-      <p class="alert alert-warning" v-html="warning"></p>
-    </template>
   </div>
 </template>
 
@@ -160,21 +178,38 @@ export default {
 
       return this.providerPromise;
     },
-    collapseAccordions() {
-      $('.panel-collapse').collapse('hide');
-      $('.fa-chevron-down').addClass('fa-chevron-right').removeClass('fa-chevron-down');
+    collapseAccordions($context) {
+      $context.find('.panel-collapse').collapse('hide');
+      $context.find('.fa-chevron-down').addClass('fa-chevron-right').removeClass('fa-chevron-down');
+    },
+    expandAccordions($context) {
+      $context.find('.panel-collapse').collapse('show');
+      $context.find('.fa-chevron-right').addClass('fa-chevron-down').removeClass('fa-chevron-right');
+    },
+    allAccordionsCollapsed($context) {
+      return !$context.find('.fa-chevron-down').length;
     },
     onToggleAccordion(event) {
       const $target = $(event.target).parent().find('.chevron');
       const isExpanded = $target.hasClass('fa-chevron-down');
+      const $field = $(event.target).closest('.list-field');
 
       // Close other items
-      this.collapseAccordions();
+      this.collapseAccordions($field);
 
       if (!isExpanded) {
         // Expand this item
         $target.closest('.panel').find('.panel-collapse').collapse('show');
         $target.addClass('fa-chevron-down').removeClass('fa-chevron-right');
+      }
+    },
+    onToggleAccordions(event) {
+      const $field = $(event.target).closest('.list-field');
+
+      if (this.allAccordionsCollapsed($field)) {
+        this.expandAccordions($field);
+      } else {
+        this.collapseAccordions($field);
       }
     },
     onDeleteItem(index) {

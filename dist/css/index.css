@@ -4,7 +4,13 @@
   background-color: transparent; }
 
 .interface {
-  padding: 0 15px; }
+  padding: 15px; }
+
+.help-icon {
+  font-size: 16px;
+  margin-left: 8px;
+  color: #333;
+  opacity: 0.5; }
 
 .loading-message {
   position: absolute;
@@ -17,21 +23,9 @@
   justify-content: center; }
 
 .form-group {
-  padding-bottom: 15px;
-  border-bottom: 1px solid #DDD; }
+  padding-bottom: 15px; }
   .form-group:last-child {
     border-bottom: 0; }
-  .form-group .options {
-    display: flex;
-    flex-wrap: wrap; }
-    .form-group .options label {
-      margin-right: 12px;
-      font-weight: normal;
-      display: flex; }
-      .form-group .options label:hover {
-        cursor: pointer; }
-      .form-group .options label input {
-        margin-right: 3px; }
 
 .panel-group {
   -webkit-user-select: none; }
@@ -109,3 +103,8 @@
 
 .panel-title-text {
   flex: 1; }
+
+.btn.expand-items {
+  color: #333;
+  font-size: 0.9em;
+  margin-top: 0 !important; }
