@@ -1,8 +1,14 @@
 <template>
   <div class="interface">
-    <h3>{{ configuration.title }}</h3>
-
-    <form ref="form" class="fields" v-on:submit.prevent="onSubmit">
+    <form ref="form" class="form-horizontal" v-on:submit.prevent="onSubmit">
+      <header>
+        <p>
+          {{ displayName || name }}
+          <a v-if="supportUrl" :href="supportUrl" class="help-icon" target="_blank">
+            <i class="fa fa-question-circle-o"></i>
+          </a>
+        </p>
+      </header>
       <template v-for="field in configuration.fields">
         <field ref="fieldInstances" v-bind="field" v-bind:key="field.name"></field>
       </template>

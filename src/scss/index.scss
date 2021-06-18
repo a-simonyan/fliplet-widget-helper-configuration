@@ -8,7 +8,14 @@
 }
 
 .interface {
-  padding: 0 15px;
+  padding: 15px;
+}
+
+.help-icon {
+  font-size: 16px;
+  margin-left: 8px;
+  color: #333;
+  opacity: 0.5;
 }
 
 .loading-message {
@@ -24,29 +31,9 @@
 
 .form-group {
   padding-bottom: 15px;
-  border-bottom: 1px solid #DDD;
 
   &:last-child {
     border-bottom: 0;
-  }
-
-  .options {
-    display: flex;
-    flex-wrap: wrap;
-
-    label {
-      margin-right: 12px;
-      font-weight: normal;
-      display: flex;
-
-      &:hover {
-        cursor: pointer;
-      }
-
-      input {
-        margin-right: 3px;
-      }
-    }
   }
 }
 
@@ -144,4 +131,10 @@
 
 .panel-title-text {
   flex: 1;
+}
+
+.btn.expand-items {
+  color: #333;
+  font-size: 0.9em;
+  margin-top: 0 !important;
 }

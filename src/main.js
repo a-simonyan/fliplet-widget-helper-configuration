@@ -8,17 +8,28 @@ if (Fliplet.Env.get('development')) {
         'https://d2fx5g1ro9ok5z.cloudfront.net/widgets/com.fliplet.helper-configuration/1.0.0/',
       data: {
         name: 'welcome',
+        displayName: 'Welcome',
+        supportUrl: 'https://developers.fliplet.com',
         configuration: {
           dependencies: ['tinymce'],
           fields: [
-            { name: 'name', type: 'text', label: 'Your name' },
+            { name: 'name', type: 'text', label: 'Your name', description: 'This is your name', required: true },
+            { name: 'bio', type: 'textarea', label: 'Bio', description: 'This is your bio', rows: 5, required: true },
+            { name: 'stocks', type: 'checkbox', label: 'Stocks', description: 'Stocks that you own', options: [
+              { value: 'AAPL', label: 'Apple' },
+              { value: 'FB', label: 'Facebook' },
+              { value: 'GOOGL', label: 'Google' }
+            ], required: true },
+            { name: 'city', type: 'radio', label: 'City', description: 'Where do you live?', options: [
+              'London', 'New York', 'Paris'
+            ] },
             {
               type: 'provider',
               name: 'files',
               label: 'Open file picker',
               package: 'com.fliplet.file-picker',
               mode: 'full-screen',
-              html: '<button data-open-provider>Open</button> You selected {{ value.length }} files'
+              html: '<button class="btn btn-default" data-open-provider>Open</button> You selected {{ value.length }} files'
             },
             {
               name: 'buttons',
@@ -41,28 +52,6 @@ if (Fliplet.Env.get('development')) {
                   package: 'com.fliplet.link'
                 }
               ]
-            }
-          ]
-        },
-        fields: {
-          name: 'Doe',
-          type: 'welcome',
-          'buttons': [
-            {
-              'title': '1',
-              'action': {
-                'action': 'screen',
-                'page': '2',
-                'transition': 'fade'
-              }
-            },
-            {
-              'title': '2',
-              'action': {
-                'action': 'screen',
-                'page': '1',
-                'transition': 'fade'
-              }
             }
           ]
         },
