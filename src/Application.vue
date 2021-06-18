@@ -3,7 +3,7 @@
     <form ref="form" class="form-horizontal" v-on:submit.prevent="onSubmit">
       <header>
         <p>
-          {{ displayName }}
+          {{ displayName || name }}
           <a v-if="supportUrl" :href="supportUrl" class="help-icon" target="_blank">
             <i class="fa fa-question-circle-o"></i>
           </a>
