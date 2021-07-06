@@ -58,6 +58,14 @@
           </label>
         </div>
       </template>
+      <template v-if="type === 'toggle'">
+        <div class="checkbox checkbox-icon">
+          <input :name="name" :id="name" type="checkbox" value="true" v-model="value" :required="required">
+          <label :for="name">
+            <span class="check"><i class="fa fa-check"></i></span> {{ toggleLabel }}
+          </label>
+        </div>
+      </template>
       <template v-if="!isFullScreenProvider">
         <div v-if="html" v-html="html"></div>
       </template>
@@ -101,6 +109,7 @@ export default {
     'required',
     'rows',
     'options',
+    'toggleLabel',
     'package',
     'fields',
     'addLabel',
