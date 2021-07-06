@@ -1,8 +1,8 @@
 <template>
-  <div class="form-group clearfix" :data-field="name">
+  <div v-show="typeof show === 'undefined' || show" class="form-group clearfix" :data-field="name">
     <div class="col-sm-4 control-label">
       <label v-if="label">{{ label }}</label>
-      <p v-if="description" class="help-block">{{ description }}</p>
+      <p v-if="description" class="help-block" v-html="description"></p>
     </div>
     <div class="col-sm-8">
       <div v-if="type === 'list' && panelIsVisible" class="list-field">
@@ -106,6 +106,7 @@ export default {
     'addLabel',
     'index',
     'mode',
+    'show',
     'headingFieldName',
     'emptyListPlaceholderHtml'
   ],
@@ -126,13 +127,20 @@ export default {
 
       this.$parent.fields[this.name] = newValue;
 
+      const field = _.find(this.$parent.configuration.fields, { name: this.name });
+
+      field.value = newValue;
+
       if (this.change) {
         const change = new Function(this.change)();
+
         change.call(this, newValue);
       }
     }
   },
   methods: {
+    // Methods can be used when the Vue instance is passed as context for
+    // the change and ready callback functions
     find: findAll,
     findOne: findOne,
     children: findChildren,
@@ -318,7 +326,8 @@ export default {
 
     if (this.ready) {
       const ready = new Function(this.ready)();
-      ready.call(this, this.$el);
+
+      ready.call(this, this.$el, this.value);
     }
   }
 };

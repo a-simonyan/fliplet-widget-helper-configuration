@@ -357,7 +357,7 @@ var render = function() {
         _c("header", [
           _c("p", [
             _vm._v(
-              "\n        " + _vm._s(_vm.displayName || _vm.names) + "\n        "
+              "\n        " + _vm._s(_vm.displayName || _vm.name) + "\n        "
             ),
             _vm.supportUrl
               ? _c(
@@ -451,6 +451,8 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_2__["default"]
     return Fliplet.Widget.getData();
   },
   methods: {
+    // Methods can be used when the Vue instance is passed as context for
+    // the change and ready callback functions
     find: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findAll"],
     findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findOne"],
     children: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findChildren"],
@@ -475,6 +477,11 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_2__["default"]
                 vm = _this;
                 _context.next = 6;
                 return Promise.all(_this.$refs.fieldInstances.map(function (field) {
+                  if (field.show === false) {
+                    delete vm.fields[field.name];
+                    return;
+                  }
+
                   return field.onSubmit();
                 }));
 
@@ -550,6 +557,9 @@ Vue.component('Field', _components_Field__WEBPACK_IMPORTED_MODULE_2__["default"]
         }
       }
     }
+  },
+  created: function created() {
+    Object(_libs_lookups__WEBPACK_IMPORTED_MODULE_3__["registerFields"])(this.configuration && this.configuration.fields);
   }
 });
 
@@ -1416,15 +1426,27 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "form-group clearfix", attrs: { "data-field": _vm.name } },
+    {
+      directives: [
+        {
+          name: "show",
+          rawName: "v-show",
+          value: typeof _vm.show === "undefined" || _vm.show,
+          expression: "typeof show === 'undefined' || show"
+        }
+      ],
+      staticClass: "form-group clearfix",
+      attrs: { "data-field": _vm.name }
+    },
     [
       _c("div", { staticClass: "col-sm-4 control-label" }, [
         _vm.label ? _c("label", [_vm._v(_vm._s(_vm.label))]) : _vm._e(),
         _vm._v(" "),
         _vm.description
-          ? _c("p", { staticClass: "help-block" }, [
-              _vm._v(_vm._s(_vm.description))
-            ])
+          ? _c("p", {
+              staticClass: "help-block",
+              domProps: { innerHTML: _vm._s(_vm.description) }
+            })
           : _vm._e()
       ]),
       _vm._v(" "),
@@ -1995,7 +2017,7 @@ __webpack_require__.r(__webpack_exports__);
       isFullScreenProvider: this.type === 'provider' && this.mode === 'full-screen'
     };
   },
-  props: ['type', 'name', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'package', 'fields', 'addLabel', 'index', 'mode', 'headingFieldName', 'emptyListPlaceholderHtml'],
+  props: ['type', 'name', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'package', 'fields', 'addLabel', 'index', 'mode', 'show', 'headingFieldName', 'emptyListPlaceholderHtml'],
   computed: {
     providerHtml: function providerHtml() {
       return Handlebars.compile(this.html)(this);
@@ -2013,6 +2035,12 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$parent.fields[this.name] = newValue;
 
+      var field = _.find(this.$parent.configuration.fields, {
+        name: this.name
+      });
+
+      field.value = newValue;
+
       if (this.change) {
         var change = new Function(this.change)();
         change.call(this, newValue);
@@ -2020,6 +2048,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    // Methods can be used when the Vue instance is passed as context for
+    // the change and ready callback functions
     find: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findAll"],
     findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findOne"],
     children: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findChildren"],
@@ -2227,7 +2257,7 @@ __webpack_require__.r(__webpack_exports__);
 
     if (this.ready) {
       var ready = new Function(this.ready)();
-      ready.call(this, this.$el);
+      ready.call(this, this.$el, this.value);
     }
   }
 });
@@ -2241,18 +2271,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findAll", function() { return findAll; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findOne", function() { return findOne; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findChildren", function() { return findChildren; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "registerFields", function() { return registerFields; });
 var data = Fliplet.Widget.getData();
 
 var helperInstances = _.get(data, 'helperInstances', []);
 
 var instanceId = _.get(data, 'instanceId', '');
+
+var fieldInstances = {};
 /**
  * Returns a boolean indicating whether a nested helper instance matches a filter
  * @param {Helper} instance The helper instance
  * @param {Function} predicate The function invoked per iteration
  * @returns {Boolean} Whether the element matches
  */
-
 
 function helperMatches(instance, predicate) {
   return instance.id !== instanceId && instance.isChildren && (predicate ? _.find([instance], predicate) : true);
@@ -2312,6 +2344,13 @@ function findChildren(predicate) {
     return instance.id !== instanceId && instance.parentId && instance.parentId === instanceId && (predicate ? _.find([instance], predicate) : true);
   });
 }
+function registerFields(fields) {
+  if (!fields) {
+    return;
+  }
+
+  fieldInstances = fields;
+}
 /**
  * Finds matching helper instances
  * @param {Function} predicate The function invoked per iteration
@@ -2319,7 +2358,7 @@ function findChildren(predicate) {
  */
 
 Fliplet.Helper.find = function (predicate) {
-  return _.filter(helperInstances, predicate);
+  return _.filter(helperInstances, prepareFilter(predicate));
 };
 /**
  * Finds matching helper instances
@@ -2329,7 +2368,38 @@ Fliplet.Helper.find = function (predicate) {
 
 
 Fliplet.Helper.findOne = function (predicate) {
-  return _.find(helperInstances, predicate);
+  return _.find(helperInstances, prepareFilter(predicate));
+};
+
+Fliplet.Helper.field = function (name) {
+  var field = _.find(fieldInstances, {
+    name: name
+  });
+
+  if (!field) {
+    return;
+  }
+
+  return {
+    toggle: function toggle(show) {
+      if (typeof field.show === 'undefined') {
+        Vue.set(field, 'show', true);
+      }
+
+      if (typeof show === 'undefined') {
+        field.show = !field.show;
+        return;
+      }
+
+      field.show = !!show;
+    },
+    get: function get() {
+      return field.value;
+    },
+    set: function set(value) {
+      field.value = value;
+    }
+  };
 };
 
 /***/ }),

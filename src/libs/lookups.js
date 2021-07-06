@@ -1,6 +1,7 @@
 const data = Fliplet.Widget.getData();
 const helperInstances = _.get(data, 'helperInstances', []);
 const instanceId = _.get(data, 'instanceId', '');
+let fieldInstances = {};
 
 /**
  * Returns a boolean indicating whether a nested helper instance matches a filter
@@ -71,13 +72,21 @@ export function findChildren(predicate) {
   });
 }
 
+export function registerFields(fields) {
+  if (!fields) {
+    return;
+  }
+
+  fieldInstances = fields;
+}
+
 /**
  * Finds matching helper instances
  * @param {Function} predicate The function invoked per iteration
  * @returns {Array} The matched helpers
  */
 Fliplet.Helper.find = function(predicate) {
-  return _.filter(helperInstances, predicate);
+  return _.filter(helperInstances, prepareFilter(predicate));
 };
 
 /**
@@ -86,5 +95,35 @@ Fliplet.Helper.find = function(predicate) {
  * @returns {Helper} The matched helpers
  */
 Fliplet.Helper.findOne = function(predicate) {
-  return _.find(helperInstances, predicate);
+  return _.find(helperInstances, prepareFilter(predicate));
+};
+
+Fliplet.Helper.field = function(name) {
+  const field = _.find(fieldInstances, { name: name });
+
+  if (!field) {
+    return;
+  }
+
+  return {
+    toggle: function(show) {
+      if (typeof field.show === 'undefined') {
+        Vue.set(field, 'show', true);
+      }
+
+      if (typeof show === 'undefined') {
+        field.show = !field.show;
+
+        return;
+      }
+
+      field.show = !!show;
+    },
+    get: function() {
+      return field.value;
+    },
+    set: function(value) {
+      field.value = value;
+    }
+  };
 };
