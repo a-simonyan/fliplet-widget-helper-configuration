@@ -15,6 +15,15 @@ if (Fliplet.Env.get('development')) {
           fields: [
             { name: 'name', type: 'text', label: 'Your name', description: 'This is your name', required: true },
             { name: 'bio', type: 'textarea', label: 'Bio', description: 'This is your bio', rows: 5, required: true },
+            {
+              type: 'toggle',
+              name: 'darkMode',
+              label: 'Turn on Dark Mode',
+              description: 'Enable Dark Mode',
+              toggleLabel: 'Enable',
+              default: false,
+              required: true
+            },
             { name: 'stocks', type: 'checkbox', label: 'Stocks', description: 'Stocks that you own', options: [
               { value: 'AAPL', label: 'Apple' },
               { value: 'FB', label: 'Facebook' },

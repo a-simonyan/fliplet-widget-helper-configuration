@@ -120,6 +120,14 @@ if (Fliplet.Env.get('development')) {
             rows: 5,
             required: true
           }, {
+            type: 'toggle',
+            name: 'darkMode',
+            label: 'Turn on Dark Mode',
+            description: 'Enable Dark Mode',
+            toggleLabel: 'Enable',
+            "default": false,
+            required: true
+          }, {
             name: 'stocks',
             type: 'checkbox',
             label: 'Stocks',
@@ -1834,6 +1842,61 @@ var render = function() {
               })
             : _vm._e(),
           _vm._v(" "),
+          _vm.type === "toggle"
+            ? [
+                _c("div", { staticClass: "checkbox checkbox-icon" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.value,
+                        expression: "value"
+                      }
+                    ],
+                    attrs: {
+                      name: _vm.name,
+                      id: _vm.name,
+                      type: "checkbox",
+                      value: "true",
+                      required: _vm.required
+                    },
+                    domProps: {
+                      checked: Array.isArray(_vm.value)
+                        ? _vm._i(_vm.value, "true") > -1
+                        : _vm.value
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.value,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = "true",
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 && (_vm.value = $$a.concat([$$v]))
+                          } else {
+                            $$i > -1 &&
+                              (_vm.value = $$a
+                                .slice(0, $$i)
+                                .concat($$a.slice($$i + 1)))
+                          }
+                        } else {
+                          _vm.value = $$c
+                        }
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("label", { attrs: { for: _vm.name } }, [
+                    _vm._m(3),
+                    _vm._v(" " + _vm._s(_vm.toggleLabel) + "\n        ")
+                  ])
+                ])
+              ]
+            : _vm._e(),
+          _vm._v(" "),
           !_vm.isFullScreenProvider
             ? [
                 _vm.html
@@ -1891,6 +1954,14 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("span", { staticClass: "check" }, [
       _c("i", { staticClass: "fa fa-circle" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "check" }, [
+      _c("i", { staticClass: "fa fa-check" })
     ])
   },
   function() {
@@ -2007,6 +2078,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2017,7 +2096,7 @@ __webpack_require__.r(__webpack_exports__);
       isFullScreenProvider: this.type === 'provider' && this.mode === 'full-screen'
     };
   },
-  props: ['type', 'name', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'package', 'fields', 'addLabel', 'index', 'mode', 'show', 'headingFieldName', 'emptyListPlaceholderHtml'],
+  props: ['type', 'name', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'toggleLabel', 'package', 'fields', 'addLabel', 'index', 'mode', 'show', 'headingFieldName', 'emptyListPlaceholderHtml'],
   computed: {
     providerHtml: function providerHtml() {
       return Handlebars.compile(this.html)(this);
