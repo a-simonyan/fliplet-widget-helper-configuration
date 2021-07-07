@@ -39,12 +39,12 @@
           <a v-if="this.value && this.value.length" class="btn btn-link expand-items" v-on:click.prevent="onToggleAccordions" href="#">Expand/Collapse All</a>
         </p>
       </div>
-      <input v-if="type === 'text'" type="text" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
-      <input v-if="type === 'email'" type="email" class="form-control" v-model="value" :placeholder="placeholder" :required="required">
-      <textarea v-if="type === 'textarea'" class="form-control" v-model="value" :placeholder="placeholder" :required="required" :rows="rows || 4"></textarea>
+      <input v-if="type === 'text'" type="text" class="form-control" v-model="value" :placeholder="placeholder" :required="requireValidation">
+      <input v-if="type === 'email'" type="email" class="form-control" v-model="value" :placeholder="placeholder" :required="requireValidation">
+      <textarea v-if="type === 'textarea'" class="form-control" v-model="value" :placeholder="placeholder" :required="requireValidation" :rows="rows || 4"></textarea>
       <template v-if="options && type === 'radio'">
         <div v-bind:key="option.value" v-for="option in options" class="radio radio-icon">
-          <input :name="name" :id="name + '_' + option.value" type="radio" :value="option.value" v-model="value">
+          <input :name="name" :id="name + '_' + option.value" type="radio" :value="option.value" v-model="value" :required="requireValidation">
           <label :for="name + '_' + option.value">
             <span class="check"><i class="fa fa-circle"></i></span> {{ option.label || option.value }}
           </label>
@@ -60,7 +60,7 @@
       </template>
       <template v-if="type === 'toggle'">
         <div class="checkbox checkbox-icon">
-          <input :name="name" :id="name" type="checkbox" value="true" v-model="value" :required="required">
+          <input :name="name" :id="name" type="checkbox" value="true" v-model="value" :required="requireValidation">
           <label :for="name">
             <span class="check"><i class="fa fa-check"></i></span> {{ toggleLabel }}
           </label>
@@ -122,6 +122,9 @@ export default {
   computed: {
     providerHtml() {
       return Handlebars.compile(this.html)(this);
+    },
+    requireValidation() {
+      return (typeof this.show === 'undefined' || this.show) && this.required;
     }
   },
   watch: {

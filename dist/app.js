@@ -1658,7 +1658,7 @@ var render = function() {
                 attrs: {
                   type: "text",
                   placeholder: _vm.placeholder,
-                  required: _vm.required
+                  required: _vm.requireValidation
                 },
                 domProps: { value: _vm.value },
                 on: {
@@ -1686,7 +1686,7 @@ var render = function() {
                 attrs: {
                   type: "email",
                   placeholder: _vm.placeholder,
-                  required: _vm.required
+                  required: _vm.requireValidation
                 },
                 domProps: { value: _vm.value },
                 on: {
@@ -1713,7 +1713,7 @@ var render = function() {
                 staticClass: "form-control",
                 attrs: {
                   placeholder: _vm.placeholder,
-                  required: _vm.required,
+                  required: _vm.requireValidation,
                   rows: _vm.rows || 4
                 },
                 domProps: { value: _vm.value },
@@ -1746,7 +1746,8 @@ var render = function() {
                       attrs: {
                         name: _vm.name,
                         id: _vm.name + "_" + option.value,
-                        type: "radio"
+                        type: "radio",
+                        required: _vm.requireValidation
                       },
                       domProps: {
                         value: option.value,
@@ -1859,7 +1860,7 @@ var render = function() {
                       id: _vm.name,
                       type: "checkbox",
                       value: "true",
-                      required: _vm.required
+                      required: _vm.requireValidation
                     },
                     domProps: {
                       checked: Array.isArray(_vm.value)
@@ -2100,6 +2101,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     providerHtml: function providerHtml() {
       return Handlebars.compile(this.html)(this);
+    },
+    requireValidation: function requireValidation() {
+      return (typeof this.show === 'undefined' || this.show) && this.required;
     }
   },
   watch: {
