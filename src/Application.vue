@@ -19,7 +19,7 @@
 
 <script>
 import Field from './components/Field';
-import { findAll, findOne, findChildren } from './libs/lookups';
+import { findAll, findOne, findChildren, registerFields } from './libs/lookups';
 
 Vue.component('Field', Field);
 
@@ -28,6 +28,8 @@ export default {
     return Fliplet.Widget.getData();
   },
   methods: {
+    // Methods can be used when the Vue instance is passed as context for
+    // the change and ready callback functions
     find: findAll,
     findOne: findOne,
     children: findChildren,
@@ -41,6 +43,12 @@ export default {
       var beforeSave;
 
       await Promise.all(this.$refs.fieldInstances.map((field) => {
+        if (field.show === false) {
+          delete vm.fields[field.name];
+
+          return;
+        }
+
         return field.onSubmit();
       }));
 
@@ -106,6 +114,9 @@ export default {
         }
       }
     }
+  },
+  created() {
+    registerFields(this.configuration && this.configuration.fields);
   }
 };
 </script>
