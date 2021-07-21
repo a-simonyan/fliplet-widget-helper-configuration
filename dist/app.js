@@ -2352,6 +2352,13 @@ __webpack_require__.r(__webpack_exports__);
         value = {
           selectFiles: value
         };
+      } else if (this["package"] === 'com.fliplet.data-source-provider') {
+        // Apply default values to ensure data sources and security rules are correctly managed
+        value = _.assignIn({}, this["default"], value); // Data source provider wants a slightly different input from the original output
+
+        if (value.id) {
+          value.dataSourceId = value.id;
+        }
       }
 
       this.provider = Fliplet.Widget.open(this["package"], {
