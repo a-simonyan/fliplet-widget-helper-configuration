@@ -25,8 +25,13 @@
 .form-group:last-child {
   border-bottom: 0; }
 
-.form-group[data-type="provider"], .form-group[data-type="html"], .form-group[data-type="hidden"] {
+.form-group[data-type="html"], .form-group[data-type="hidden"] {
   margin-bottom: 0; }
+
+.form-group.has-error {
+  margin-bottom: -5px; }
+  .form-group.has-error .form-group {
+    color: #333; }
 
 .panel-group {
   -webkit-user-select: none; }
@@ -44,6 +49,17 @@
 .panel.focus .glyphicon-remove {
   opacity: 0 !important;
   -webkit-transition: opacity 50ms linear; }
+
+.panel-group .panel:first-child .panel-wrapper {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px; }
+
+.panel-group .panel:last-child .panel-wrapper {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px; }
+
+.panel-wrapper.has-error {
+  border: 1px solid #a94442; }
 
 .panel-heading {
   position: relative;

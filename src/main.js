@@ -14,6 +14,8 @@ if (Fliplet.Env.get('development')) {
           dependencies: ['tinymce'],
           fields: [
             { name: 'name', type: 'text', label: 'Your name', description: 'This is your name', required: true },
+            { name: 'email', type: 'email', label: 'Your email', description: 'This is your email', required: true },
+            { name: 'secret', type: 'hidden', label: 'Your secret', required: true },
             { name: 'bio', type: 'textarea', label: 'Bio', description: 'This is your bio', rows: 5, required: true },
             {
               type: 'toggle',
@@ -31,7 +33,7 @@ if (Fliplet.Env.get('development')) {
             ], required: true },
             { name: 'city', type: 'radio', label: 'City', description: 'Where do you live?', options: [
               'London', 'New York', 'Paris'
-            ] },
+            ], required: true },
             {
               type: 'provider',
               name: 'files',
@@ -52,7 +54,8 @@ if (Fliplet.Env.get('development')) {
                   name: 'title',
                   type: 'text',
                   label: 'Button title',
-                  placeholder: 'Sample button'
+                  placeholder: 'Sample button',
+                  required: true
                 },
                 {
                   type: 'provider',
@@ -60,7 +63,8 @@ if (Fliplet.Env.get('development')) {
                   label: 'Choose an action to do when the button is pressed',
                   package: 'com.fliplet.link'
                 }
-              ]
+              ],
+              required: true
             }
           ]
         },
