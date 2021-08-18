@@ -313,7 +313,7 @@ module.exports["default"] = module.exports, module.exports.__esModule = true;
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Application_vue_vue_type_template_id_44b1e432___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _Application_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
 
 
 
@@ -1472,7 +1472,7 @@ try {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Field_vue_vue_type_template_id_3a2f7ffa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
 /* harmony import */ var _Field_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
 
 
 
@@ -1541,7 +1541,6 @@ var render = function() {
                     expression: "(typeof show === 'undefined' || show)"
                   }
                 ],
-                staticClass: "form-group clearfix",
                 class: [
                   "form-group clearfix",
                   {
@@ -2256,7 +2255,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _libs_lookups__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
-/* harmony import */ var _libs_validation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(16);
 
 
 
@@ -2364,9 +2362,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
+VeeValidate.extend('required', {
+  validate: function validate(value) {
+    var valid;
 
+    if (typeof value === 'undefined' || value === null) {
+      valid = false;
+    } else if (typeof value === 'number') {
+      valid = !isNaN(value);
+    } else if (typeof value === 'boolean') {
+      valid = !!value;
+    } else if (Array.isArray(value) || typeof value === 'string') {
+      valid = value.length;
+    } else if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_1___default()(value) === 'object') {
+      valid = !_.isEmpty(value);
+    } else {
+      valid = !!value;
+    }
+
+    return {
+      required: true,
+      valid: valid
+    };
+  },
+  computesRequired: true,
+  message: 'This field is required'
+});
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'field',
   components: {
@@ -2404,21 +2426,11 @@ __webpack_require__.r(__webpack_exports__);
         return {};
       }
 
-      var rules = {}; // Add "required" rules (some field types have custom validation rules)
+      var rules = {}; // Set "required" rule
 
       if (this.required) {
-        var customRequireRule = "required".concat(_.capitalize(this.type));
-
-        if (Object(_libs_validation__WEBPACK_IMPORTED_MODULE_4__["isValidRule"])(customRequireRule)) {
-          rules[customRequireRule] = true;
-        } else {
-          rules.required = true;
-        }
-      }
-
-      _.forIn(rules, function (value, rule) {
-        Object(_libs_validation__WEBPACK_IMPORTED_MODULE_4__["addRule"])(rule);
-      }); // Parse rules property to support all the rules supported by vee-validate using object expression
+        rules.required = true;
+      } // Parse rules property to support all the rules supported by vee-validate using object expression
       // https://vee-validate.logaretm.com/v3/advanced/rules-object-expression.html#defining-rules
 
 
@@ -2830,66 +2842,6 @@ Fliplet.Helper.field = function (name) {
 
 /***/ }),
 /* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isValidRule", function() { return isValidRule; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addRule", function() { return addRule; });
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
-
-var rules = {
-  requiredToggle: {
-    validate: function validate(value) {
-      return {
-        required: true,
-        valid: !!value
-      };
-    },
-    computesRequired: true,
-    message: 'This field is required'
-  },
-  requiredCheckbox: {
-    validate: function validate(value) {
-      return {
-        required: true,
-        valid: value && value.length
-      };
-    },
-    computesRequired: true,
-    message: 'This field is required'
-  },
-  requiredList: {
-    validate: function validate(value) {
-      return {
-        required: true,
-        valid: value && value.length
-      };
-    },
-    computesRequired: true,
-    message: 'This field is required'
-  }
-};
-var appliedRules = [];
-function isValidRule(rule) {
-  return Object.keys(rules).indexOf(rule) > -1;
-}
-function addRule(rule, enabledRules) {
-  if (appliedRules.indexOf(rule) > -1 || Object.keys(rules).indexOf(rule) === -1) {
-    return;
-  }
-
-  appliedRules.push(rule);
-  VeeValidate.extend(rule, rules[rule]);
-
-  if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(enabledRules) === 'object') {
-    enabledRules[rule] = true;
-  }
-}
-
-/***/ }),
-/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
