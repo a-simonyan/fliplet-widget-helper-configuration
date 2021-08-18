@@ -1,19 +1,25 @@
 <template>
   <div class="interface">
-    <form ref="form" class="form-horizontal" v-on:submit.prevent="onSubmit">
-      <header>
-        <p>
-          {{ displayName || name }}
-          <a v-if="supportUrl" :href="supportUrl" class="help-icon" target="_blank">
-            <i class="fa fa-question-circle-o"></i>
-          </a>
-        </p>
-      </header>
-      <template v-for="field in configuration.fields">
-        <field ref="fieldInstances" v-bind="field" v-bind:key="field.name"></field>
-      </template>
-      <input ref="submitButton" type="submit" style="display:none"/>
-    </form>
+    <validation-observer v-slot="{ validate }" ref="observer">
+      <form ref="form" class="form-horizontal" v-on:submit.prevent="validate().then(onSubmit)">
+        <header>
+          <p>
+            {{ displayName || name }}
+            <a v-if="supportUrl" :href="supportUrl" class="help-icon" target="_blank">
+              <i class="fa fa-question-circle-o"></i>
+            </a>
+          </p>
+        </header>
+        <template v-for="field in configuration.fields">
+          <field ref="fieldInstances" v-bind="field" v-bind:key="field.name"></field>
+        </template>
+        <div class="form-group" v-if="showSubmit">
+          <div class="col-sm-8 col-sm-offset-4">
+            <input class="btn btn-primary" ref="submitButton" type="submit" />
+          </div>
+        </div>
+      </form>
+    </validation-observer>
   </div>
 </template>
 
@@ -21,11 +27,19 @@
 import Field from './components/Field';
 import { findAll, findOne, findChildren, registerFields } from './libs/lookups';
 
-Vue.component('Field', Field);
-
 export default {
+  components: {
+    field: Field,
+    validationObserver: VeeValidate.ValidationObserver
+  },
   data() {
-    return Fliplet.Widget.getData();
+    return _.assign(
+      {
+        fields: {},
+        showSubmit: window.parent === window && Fliplet.Env.get('development')
+      },
+      Fliplet.Widget.getData()
+    );
   },
   methods: {
     // Methods can be used when the Vue instance is passed as context for
@@ -33,18 +47,28 @@ export default {
     find: findAll,
     findOne: findOne,
     children: findChildren,
-    async onSubmit() {
+    async onSubmit(isValid) {
+      //  Validation failed
+      if (!isValid) {
+        // Scroll user to first visible field with error
+        $('html, body').stop().animate({
+          scrollTop: $('.has-error:visible').eq(0).offset().top
+        }, {
+          duration: 200
+        });
+        return;
+      }
+
       if (window.currentProvider) {
         window.currentProvider.forwardSaveRequest();
         return;
       }
 
-      var vm = this;
       var beforeSave;
 
       await Promise.all(this.$refs.fieldInstances.map((field) => {
         if (field.show === false) {
-          delete vm.fields[field.name];
+          delete this.fields[field.name];
 
           return;
         }
@@ -71,10 +95,16 @@ export default {
         beforeSave = Promise.resolve();
       }
 
-      beforeSave.then(function() {
+      beforeSave.then(() => {
         // Remove reactivity so objects are properly converted
         // into data that can be transmitted
-        const data = JSON.parse(JSON.stringify(vm.fields));
+        let data;
+
+        try {
+          data = JSON.parse(JSON.stringify(this.fields));
+        } catch (e) {
+          // Silent error
+        }
 
         Fliplet.Studio.emit('page-preview-send-event', {
           type: 'helper-configuration-updated',
@@ -96,10 +126,11 @@ export default {
     }
   },
   mounted() {
-    var vm = this;
-
-    Fliplet.Widget.onSaveRequest(function() {
-      $(vm.$refs.submitButton).click();
+    Fliplet.Widget.onSaveRequest(() => {
+      return this.$refs.observer.validate()
+        .then(() => {
+          return this.onSubmit();
+        });
     });
 
     if (this.configuration.ready) {
