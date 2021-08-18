@@ -47,15 +47,20 @@ export default {
     find: findAll,
     findOne: findOne,
     children: findChildren,
-    async onSubmit(isValid) {
+    async onSubmit(valid) {
       //  Validation failed
-      if (!isValid) {
-        // Scroll user to first visible field with error
-        $('html, body').stop().animate({
-          scrollTop: $('.has-error:visible').eq(0).offset().top
-        }, {
-          duration: 200
-        });
+      if (!valid) {
+        const $errors = $('.has-error:visible');
+
+        if ($errors.length) {
+          // Scroll user to first visible field with error
+          $('html, body').stop().animate({
+            scrollTop: $errors.eq(0).offset().top
+          }, {
+            duration: 200
+          });
+        }
+
         return;
       }
 
@@ -128,8 +133,8 @@ export default {
   mounted() {
     Fliplet.Widget.onSaveRequest(() => {
       return this.$refs.observer.validate()
-        .then(() => {
-          return this.onSubmit();
+        .then((valid) => {
+          return this.onSubmit(valid);
         });
     });
 
