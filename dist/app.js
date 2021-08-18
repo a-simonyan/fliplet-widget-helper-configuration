@@ -313,7 +313,7 @@ module.exports["default"] = module.exports, module.exports.__esModule = true;
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Application_vue_vue_type_template_id_44b1e432___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _Application_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
 
 
 
@@ -531,39 +531,44 @@ __webpack_require__.r(__webpack_exports__);
     find: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findAll"],
     findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findOne"],
     children: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findChildren"],
-    onSubmit: function onSubmit(isValid) {
+    onSubmit: function onSubmit(valid) {
       var _this = this;
 
       return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee() {
-        var beforeSave, beforeSaveFunction;
+        var $errors, beforeSave, beforeSaveFunction;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (isValid) {
-                  _context.next = 3;
+                if (valid) {
+                  _context.next = 4;
                   break;
                 }
 
-                // Scroll user to first visible field with error
-                $('html, body').stop().animate({
-                  scrollTop: $('.has-error:visible').eq(0).offset().top
-                }, {
-                  duration: 200
-                });
+                $errors = $('.has-error:visible');
+
+                if ($errors.length) {
+                  // Scroll user to first visible field with error
+                  $('html, body').stop().animate({
+                    scrollTop: $errors.eq(0).offset().top
+                  }, {
+                    duration: 200
+                  });
+                }
+
                 return _context.abrupt("return");
 
-              case 3:
+              case 4:
                 if (!window.currentProvider) {
-                  _context.next = 6;
+                  _context.next = 7;
                   break;
                 }
 
                 window.currentProvider.forwardSaveRequest();
                 return _context.abrupt("return");
 
-              case 6:
-                _context.next = 8;
+              case 7:
+                _context.next = 9;
                 return Promise.all(_this.$refs.fieldInstances.map(function (field) {
                   if (field.show === false) {
                     delete _this.fields[field.name];
@@ -573,7 +578,7 @@ __webpack_require__.r(__webpack_exports__);
                   return field.onSubmit();
                 }));
 
-              case 8:
+              case 9:
                 if (_this.configuration.beforeSave) {
                   beforeSaveFunction = new Function(_this.configuration.beforeSave)();
 
@@ -624,7 +629,7 @@ __webpack_require__.r(__webpack_exports__);
                   });
                 });
 
-              case 11:
+              case 12:
               case "end":
                 return _context.stop();
             }
@@ -637,8 +642,8 @@ __webpack_require__.r(__webpack_exports__);
     var _this2 = this;
 
     Fliplet.Widget.onSaveRequest(function () {
-      return _this2.$refs.observer.validate().then(function () {
-        return _this2.onSubmit();
+      return _this2.$refs.observer.validate().then(function (valid) {
+        return _this2.onSubmit(valid);
       });
     });
 
@@ -1472,7 +1477,7 @@ try {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Field_vue_vue_type_template_id_3a2f7ffa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
 /* harmony import */ var _Field_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
 
 
 
@@ -1541,7 +1546,6 @@ var render = function() {
                     expression: "(typeof show === 'undefined' || show)"
                   }
                 ],
-                staticClass: "form-group clearfix",
                 class: [
                   "form-group clearfix",
                   {
@@ -2256,7 +2260,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _libs_lookups__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
-/* harmony import */ var _libs_validation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(16);
 
 
 
@@ -2364,9 +2367,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
+VeeValidate.extend('required', {
+  validate: function validate(value) {
+    var valid;
 
+    if (typeof value === 'undefined' || value === null) {
+      valid = false;
+    } else if (typeof value === 'number') {
+      valid = !isNaN(value);
+    } else if (typeof value === 'boolean') {
+      valid = !!value;
+    } else if (Array.isArray(value) || typeof value === 'string') {
+      valid = value.length;
+    } else if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_1___default()(value) === 'object') {
+      valid = !_.isEmpty(value);
+    } else {
+      valid = !!value;
+    }
+
+    return {
+      required: true,
+      valid: valid
+    };
+  },
+  computesRequired: true,
+  message: 'This field is required'
+});
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'field',
   components: {
@@ -2404,21 +2431,11 @@ __webpack_require__.r(__webpack_exports__);
         return {};
       }
 
-      var rules = {}; // Add "required" rules (some field types have custom validation rules)
+      var rules = {}; // Set "required" rule
 
       if (this.required) {
-        var customRequireRule = "required".concat(_.capitalize(this.type));
-
-        if (Object(_libs_validation__WEBPACK_IMPORTED_MODULE_4__["isValidRule"])(customRequireRule)) {
-          rules[customRequireRule] = true;
-        } else {
-          rules.required = true;
-        }
-      }
-
-      _.forIn(rules, function (value, rule) {
-        Object(_libs_validation__WEBPACK_IMPORTED_MODULE_4__["addRule"])(rule);
-      }); // Parse rules property to support all the rules supported by vee-validate using object expression
+        rules.required = true;
+      } // Parse rules property to support all the rules supported by vee-validate using object expression
       // https://vee-validate.logaretm.com/v3/advanced/rules-object-expression.html#defining-rules
 
 
@@ -2830,66 +2847,6 @@ Fliplet.Helper.field = function (name) {
 
 /***/ }),
 /* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isValidRule", function() { return isValidRule; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addRule", function() { return addRule; });
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
-
-var rules = {
-  requiredToggle: {
-    validate: function validate(value) {
-      return {
-        required: true,
-        valid: !!value
-      };
-    },
-    computesRequired: true,
-    message: 'This field is required'
-  },
-  requiredCheckbox: {
-    validate: function validate(value) {
-      return {
-        required: true,
-        valid: value && value.length
-      };
-    },
-    computesRequired: true,
-    message: 'This field is required'
-  },
-  requiredList: {
-    validate: function validate(value) {
-      return {
-        required: true,
-        valid: value && value.length
-      };
-    },
-    computesRequired: true,
-    message: 'This field is required'
-  }
-};
-var appliedRules = [];
-function isValidRule(rule) {
-  return Object.keys(rules).indexOf(rule) > -1;
-}
-function addRule(rule, enabledRules) {
-  if (appliedRules.indexOf(rule) > -1 || Object.keys(rules).indexOf(rule) === -1) {
-    return;
-  }
-
-  appliedRules.push(rule);
-  VeeValidate.extend(rule, rules[rule]);
-
-  if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(enabledRules) === 'object') {
-    enabledRules[rule] = true;
-  }
-}
-
-/***/ }),
-/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

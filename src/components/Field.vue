@@ -8,7 +8,6 @@
           'has-error': errors.length
         }
       ]"
-      class="form-group clearfix"
       :data-field="name"
       :data-type="type">
       <input v-if="type === 'hidden'" type="hidden" v-model="value" />
@@ -105,8 +104,33 @@
 
 <script>
 import { findAll, findOne, findChildren } from '../libs/lookups';
-import { isValidRule, addRule } from '../libs/validation';
 
+VeeValidate.extend('required', {
+  validate(value) {
+    let valid;
+
+    if (typeof value === 'undefined' || value === null) {
+      valid = false;
+    } else if (typeof value === 'number') {
+      valid = !isNaN(value);
+    } else if (typeof value === 'boolean') {
+      valid = !!value;
+    } else if (Array.isArray(value) || typeof value === 'string') {
+      valid = value.length;
+    } else if (typeof value === 'object') {
+      valid = !_.isEmpty(value);
+    } else {
+      valid = !!value;
+    }
+
+    return {
+      required: true,
+      valid
+    };
+  },
+  computesRequired: true,
+  message: 'This field is required'
+});
 export default {
   name: 'field',
   components: {
@@ -172,20 +196,10 @@ export default {
 
       const rules = {};
 
-      // Add "required" rules (some field types have custom validation rules)
+      // Set "required" rule
       if (this.required) {
-        const customRequireRule = `required${_.capitalize(this.type)}`;
-
-        if (isValidRule(customRequireRule)) {
-          rules[customRequireRule] = true;
-        } else {
-          rules.required = true;
-        }
+        rules.required = true;
       }
-
-      _.forIn(rules, (value, rule) => {
-        addRule(rule);
-      });
 
       // Parse rules property to support all the rules supported by vee-validate using object expression
       // https://vee-validate.logaretm.com/v3/advanced/rules-object-expression.html#defining-rules
