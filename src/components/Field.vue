@@ -74,6 +74,15 @@
               </label>
             </div>
           </template>
+          <template v-if="options && type === 'dropdown'">
+            <label :for="name" class="select-proxy-display">
+              <select :id="name" class="hidden-select form-control" v-model="value">
+                <option value="">-- Select an option</option>
+                <option v-for="option in options" :key="option.value" :value="option.value">{{ option.label || option.value }}</option>
+              </select>
+              <span class="icon fa fa-chevron-down"></span>
+            </label>
+          </template>
           <template v-if="type === 'toggle'">
             <div class="checkbox checkbox-icon">
               <input :name="name" :id="name" type="checkbox" value="true" v-model="value">
@@ -257,6 +266,7 @@ export default {
     val(newValue) {
       if (typeof newValue !== 'undefined') {
         this.value = newValue;
+
         return;
       }
 

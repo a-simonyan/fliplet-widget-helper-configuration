@@ -35,6 +35,13 @@ if (Fliplet.Env.get('development')) {
               'London', 'New York', 'Paris'
             ], required: true },
             {
+              name: 'country', type: 'dropdown', label: 'Country', description: 'Which country is that?', options: [
+                'France',
+                'United Kingdom',
+                { value: 'United States', label: 'United States of America' }
+              ], required: true
+            },
+            {
               type: 'provider',
               name: 'files',
               label: 'Open file picker',
@@ -83,6 +90,7 @@ if (Fliplet.Env.get('development')) {
 
   if (!fields.length) {
     Fliplet.Modal.alert({ message: 'This helper has not defined a list of fields for the interface.' });
+
     return Fliplet.Widget.complete();
   }
 
