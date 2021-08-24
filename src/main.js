@@ -34,9 +34,13 @@ if (Fliplet.Env.get('development')) {
             { name: 'city', type: 'radio', label: 'City', description: 'Where do you live?', options: [
               'London', 'New York', 'Paris'
             ], required: true },
-            { name: 'country', type: 'dropdown', label: 'Country', description: 'Which country is that?', options: [
-              'France', 'United Kingdom', { value: 'United States', label: 'United States of America' }
-            ], required: true },
+            {
+              name: 'country', type: 'dropdown', label: 'Country', description: 'Which country is that?', options: [
+                'France',
+                'United Kingdom',
+                { value: 'United States', label: 'United States of America' }
+              ], required: true
+            },
             {
               type: 'provider',
               name: 'files',
