@@ -162,6 +162,16 @@ if (Fliplet.Env.get('development')) {
             options: ['London', 'New York', 'Paris'],
             required: true
           }, {
+            name: 'country',
+            type: 'dropdown',
+            label: 'Country',
+            description: 'Which country is that?',
+            options: ['France', 'United Kingdom', {
+              value: 'United States',
+              label: 'United States of America'
+            }],
+            required: true
+          }, {
             type: 'provider',
             name: 'files',
             label: 'Open file picker',
@@ -807,9 +817,9 @@ var runtime = (function (exports) {
   // This is a polyfill for %IteratorPrototype% for environments that
   // don't natively support it.
   var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
+  define(IteratorPrototype, iteratorSymbol, function () {
     return this;
-  };
+  });
 
   var getProto = Object.getPrototypeOf;
   var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
@@ -823,8 +833,9 @@ var runtime = (function (exports) {
 
   var Gp = GeneratorFunctionPrototype.prototype =
     Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunction.prototype = GeneratorFunctionPrototype;
+  define(Gp, "constructor", GeneratorFunctionPrototype);
+  define(GeneratorFunctionPrototype, "constructor", GeneratorFunction);
   GeneratorFunction.displayName = define(
     GeneratorFunctionPrototype,
     toStringTagSymbol,
@@ -938,9 +949,9 @@ var runtime = (function (exports) {
   }
 
   defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+  define(AsyncIterator.prototype, asyncIteratorSymbol, function () {
     return this;
-  };
+  });
   exports.AsyncIterator = AsyncIterator;
 
   // Note that simple async functions are implemented on top of
@@ -1133,13 +1144,13 @@ var runtime = (function (exports) {
   // iterator prototype chain incorrectly implement this, causing the Generator
   // object to not be returned from this call. This ensures that doesn't happen.
   // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
+  define(Gp, iteratorSymbol, function() {
     return this;
-  };
+  });
 
-  Gp.toString = function() {
+  define(Gp, "toString", function() {
     return "[object Generator]";
-  };
+  });
 
   function pushTryEntry(locs) {
     var entry = { tryLoc: locs[0] };
@@ -1458,14 +1469,19 @@ try {
 } catch (accidentalStrictMode) {
   // This module should not be running in strict mode, so the above
   // assignment should always work unless something is misconfigured. Just
-  // in case runtime.js accidentally runs in strict mode, we can escape
+  // in case runtime.js accidentally runs in strict mode, in modern engines
+  // we can explicitly access globalThis. In older engines we can escape
   // strict mode using a global Function call. This could conceivably fail
   // if a Content Security Policy forbids using Function, but in that case
   // the proper solution is to fix the accidental strict mode problem. If
   // you've misconfigured your bundler to force strict mode and applied a
   // CSP to forbid Function, and you're not willing to fix either of those
   // problems, please detail your unique predicament in a GitHub issue.
-  Function("r", "regeneratorRuntime = r")(runtime);
+  if (typeof globalThis === "object") {
+    globalThis.regeneratorRuntime = runtime;
+  } else {
+    Function("r", "regeneratorRuntime = r")(runtime);
+  }
 }
 
 
@@ -1692,8 +1708,9 @@ var render = function() {
                                                                           $event
                                                                         ) {
                                                                           $event.preventDefault()
-                                                                          return _vm.onToggleAccordion(
-                                                                            $event
+                                                                          return _vm.onToggleAccordion.apply(
+                                                                            null,
+                                                                            arguments
                                                                           )
                                                                         }
                                                                       }
@@ -1709,8 +1726,9 @@ var render = function() {
                                                                             $event
                                                                           ) {
                                                                             $event.preventDefault()
-                                                                            return _vm.onToggleAccordion(
-                                                                              $event
+                                                                            return _vm.onToggleAccordion.apply(
+                                                                              null,
+                                                                              arguments
                                                                             )
                                                                           }
                                                                         }
@@ -1856,7 +1874,10 @@ var render = function() {
                                       on: {
                                         click: function($event) {
                                           $event.preventDefault()
-                                          return _vm.addItem($event)
+                                          return _vm.addItem.apply(
+                                            null,
+                                            arguments
+                                          )
                                         }
                                       }
                                     },
@@ -1873,8 +1894,9 @@ var render = function() {
                                           on: {
                                             click: function($event) {
                                               $event.preventDefault()
-                                              return _vm.onToggleAccordions(
-                                                $event
+                                              return _vm.onToggleAccordions.apply(
+                                                null,
+                                                arguments
                                               )
                                             }
                                           }
@@ -2108,6 +2130,84 @@ var render = function() {
                               })
                             : _vm._e(),
                           _vm._v(" "),
+                          _vm.options && _vm.type === "dropdown"
+                            ? [
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass: "select-proxy-display",
+                                    attrs: { for: _vm.name }
+                                  },
+                                  [
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.value,
+                                            expression: "value"
+                                          }
+                                        ],
+                                        staticClass:
+                                          "hidden-select form-control",
+                                        attrs: { id: _vm.name },
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.value = $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c("option", { attrs: { value: "" } }, [
+                                          _vm._v("-- Select an option")
+                                        ]),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.options, function(option) {
+                                          return _c(
+                                            "option",
+                                            {
+                                              key: option.value,
+                                              domProps: { value: option.value }
+                                            },
+                                            [
+                                              _vm._v(
+                                                _vm._s(
+                                                  option.label || option.value
+                                                )
+                                              )
+                                            ]
+                                          )
+                                        })
+                                      ],
+                                      2
+                                    ),
+                                    _vm._v(" "),
+                                    _c("span", {
+                                      staticClass: "icon fa fa-chevron-down"
+                                    })
+                                  ]
+                                )
+                              ]
+                            : _vm._e(),
+                          _vm._v(" "),
                           _vm.type === "toggle"
                             ? [
                                 _c(
@@ -2263,6 +2363,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

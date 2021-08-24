@@ -66,6 +66,7 @@ export default {
 
       if (window.currentProvider) {
         window.currentProvider.forwardSaveRequest();
+
         return;
       }
 
