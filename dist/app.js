@@ -2580,7 +2580,7 @@ VeeValidate.extend('required', {
         name: this.name
       });
 
-      field.value = newValue; // Ensure list values are revalidated after a change is detected
+      field.value = newValue; // Ensure model-less values are manually validated after change
 
       if (this.type === 'list') {
         this.$refs.provider.validate(newValue);
@@ -2805,7 +2805,11 @@ VeeValidate.extend('required', {
     }
   },
   mounted: function mounted() {
-    this.initProvider();
+    this.initProvider(); // Ensure model-less values are synced with the validation provider
+
+    if (this.type === 'list') {
+      this.$refs.provider.syncValue(this.value);
+    }
 
     if (this.ready) {
       var ready = new Function(this.ready)();
