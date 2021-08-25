@@ -245,7 +245,7 @@ export default {
 
       field.value = newValue;
 
-      // Ensure list values are revalidated after a change is detected
+      // Ensure model-less values are manually validated after change
       if (this.type === 'list') {
         this.$refs.provider.validate(newValue);
       }
@@ -451,6 +451,11 @@ export default {
   },
   mounted() {
     this.initProvider();
+
+    // Ensure model-less values are synced with the validation provider
+    if (this.type === 'list') {
+      this.$refs.provider.syncValue(this.value);
+    }
 
     if (this.ready) {
       const ready = new Function(this.ready)();
