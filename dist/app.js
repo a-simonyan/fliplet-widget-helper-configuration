@@ -2574,13 +2574,7 @@ VeeValidate.extend('required', {
         return;
       }
 
-      this.$parent.$parent.fields[this.name] = newValue;
-
-      var field = _.find(this.$parent.$parent.configuration.fields, {
-        name: this.name
-      });
-
-      field.value = newValue; // Ensure model-less values are manually validated after change
+      this.updateParentValue(newValue); // Ensure model-less values are manually validated after change
 
       if (this.type === 'list') {
         this.$refs.provider.validate(newValue);
@@ -2605,6 +2599,15 @@ VeeValidate.extend('required', {
       }
 
       return this.value;
+    },
+    updateParentValue: function updateParentValue(value) {
+      this.$parent.$parent.fields[this.name] = value;
+
+      var field = _.find(this.$parent.$parent.configuration.fields, {
+        name: this.name
+      });
+
+      field.value = value;
     },
     onListValueChanged: function onListValueChanged(name) {
       if (name === this.headingFieldName) {
@@ -2809,6 +2812,8 @@ VeeValidate.extend('required', {
 
     if (this.type === 'list') {
       this.$refs.provider.syncValue(this.value);
+    } else if (this.type === 'dropdown' && typeof this.value === 'undefined') {
+      this.updateParentValue('');
     }
 
     if (this.ready) {
