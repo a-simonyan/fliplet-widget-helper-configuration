@@ -65,6 +65,12 @@ if (Fliplet.Env.get('development')) {
                   required: true
                 },
                 {
+                  name: 'showOnLoad',
+                  type: 'toggle',
+                  label: 'Show on load',
+                  toggleLabel: 'Yes'
+                },
+                {
                   type: 'provider',
                   name: 'action',
                   label: 'Choose an action to do when the button is pressed',

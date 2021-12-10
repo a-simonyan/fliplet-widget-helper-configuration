@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import bus from './libs/bus';
 import Field from './components/Field';
 import { findAll, findOne, findChildren, registerFields } from './libs/lookups';
 
@@ -47,6 +48,17 @@ export default {
     find: findAll,
     findOne: findOne,
     children: findChildren,
+    onUpdateValue(name, value) {
+      this.fields[name] = value;
+
+      const field = _.find(this.configuration.fields, { name });
+
+      if (!field) {
+        return;
+      }
+
+      field.value = value;
+    },
     async onSubmit(valid) {
       //  Validation failed
       if (!valid) {
@@ -154,6 +166,10 @@ export default {
   },
   created() {
     registerFields(this.configuration && this.configuration.fields);
+    bus.$on('updateValue', this.onUpdateValue);
+  },
+  destroyed() {
+    bus.$off('updateValue', this.onUpdateValue);
   }
 };
 </script>

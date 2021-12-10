@@ -59,7 +59,7 @@
           <input v-if="type === 'email'" type="email" class="form-control" v-model="value" :placeholder="placeholder">
           <textarea v-if="type === 'textarea'" class="form-control" v-model="value" :placeholder="placeholder" :rows="rows || 4"></textarea>
           <template v-if="options && type === 'radio'">
-            <div v-bind:key="option.value" v-for="(option, optionIndex) in options" class="radio radio-icon">
+            <div v-bind:key="optionIndex" v-for="(option, optionIndex) in options" class="radio radio-icon">
               <input :name="fieldName" :id="fieldName + '_' + optionIndex" type="radio" :value="option.value" v-model="value">
               <label :for="fieldName + '_' + optionIndex">
                 <span class="check"><i class="fa fa-circle"></i></span> {{ option.label || option.value }}
@@ -67,7 +67,7 @@
             </div>
           </template>
           <template v-if="options && type === 'checkbox'">
-            <div v-bind:key="option.value" v-for="(option, optionIndex) in options" class="checkbox checkbox-icon">
+            <div v-bind:key="optionIndex" v-for="(option, optionIndex) in options" class="checkbox checkbox-icon">
               <input :name="fieldName" :id="fieldName + '_' + optionIndex" type="checkbox" :value="option.value" v-model="value">
               <label :for="fieldName + '_' + optionIndex">
                 <span class="check"><i class="fa fa-check"></i></span> {{ option.label || option.value }}
@@ -112,6 +112,7 @@
 </template>
 
 <script>
+import bus from '../libs/bus';
 import { findAll, findOne, findChildren } from '../libs/lookups';
 
 VeeValidate.extend('required', {
@@ -235,10 +236,11 @@ export default {
   },
   watch: {
     value(newValue) {
-      if (this.$parent.$parent.$parent.type === 'list') {
+      // This field is used in a list
+      if (this.listName) {
         _.find(this.$parent.$parent.$parent.value[this.index], { name: this.name }).value = newValue;
 
-        this.$parent.$parent.$parent.onListValueChanged(this.name, newValue);
+        this.$parent.$parent.$parent.onListValueChanged(this.name);
 
         return;
       }
@@ -273,11 +275,7 @@ export default {
       return this.value;
     },
     updateParentValue(value) {
-      this.$parent.$parent.fields[this.name] = value;
-
-      const field = _.find(this.$parent.$parent.configuration.fields, { name: this.name });
-
-      field.value = value;
+      bus.$emit('updateValue', this.name, value);
     },
     onListValueChanged(name) {
       if (name === this.headingFieldName) {
@@ -458,15 +456,28 @@ export default {
           resolve(this.value);
         });
       });
+    },
+    normalizeOptions() {
+      if (['radio', 'checkbox', 'dropdown'].indexOf(this.type) > -1) {
+        _.forEach(this.options, (option, i) => {
+          if (typeof option !== 'object') {
+            this.options[i] = {
+              value: option
+            };
+          }
+        });
+      }
     }
   },
   mounted() {
     this.initProvider();
+    this.normalizeOptions();
 
     // Ensure model-less values are synced with the validation provider
     if (this.type === 'list') {
       this.$refs.provider.syncValue(this.value);
     } else if (this.type === 'dropdown' && typeof this.value === 'undefined') {
+      this.value = '';
       this.updateParentValue('');
     } else if (this.type === 'checkbox' && !Array.isArray(this.value)) {
       this.$set(this, 'value', _.compact([this.value]));
