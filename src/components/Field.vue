@@ -38,7 +38,7 @@
                           <div class="form">
                             <div>
                               <template v-for="field in fieldList">
-                                <field ref="fieldInstances" v-bind="field" v-bind:key="field.name" v-bind:index="index"></field>
+                                <field ref="fieldInstances" v-bind="field" v-bind:key="field.name" v-bind:list-name="name" v-bind:index="index"></field>
                               </template>
                             </div>
                           </div>
@@ -59,24 +59,24 @@
           <input v-if="type === 'email'" type="email" class="form-control" v-model="value" :placeholder="placeholder">
           <textarea v-if="type === 'textarea'" class="form-control" v-model="value" :placeholder="placeholder" :rows="rows || 4"></textarea>
           <template v-if="options && type === 'radio'">
-            <div v-bind:key="option.value" v-for="option in options" class="radio radio-icon">
-              <input :name="name" :id="name + '_' + option.value" type="radio" :value="option.value" v-model="value">
-              <label :for="name + '_' + option.value">
+            <div v-bind:key="option.value" v-for="(option, optionIndex) in options" class="radio radio-icon">
+              <input :name="fieldName" :id="fieldName + '_' + optionIndex" type="radio" :value="option.value" v-model="value">
+              <label :for="fieldName + '_' + optionIndex">
                 <span class="check"><i class="fa fa-circle"></i></span> {{ option.label || option.value }}
               </label>
             </div>
           </template>
           <template v-if="options && type === 'checkbox'">
-            <div v-bind:key="option.value" v-for="option in options" class="checkbox checkbox-icon">
-              <input :name="name" :id="name + '_' + option.value" type="checkbox" :value="option.value" v-model="value">
-              <label :for="name + '_' + option.value">
+            <div v-bind:key="option.value" v-for="(option, optionIndex) in options" class="checkbox checkbox-icon">
+              <input :name="fieldName" :id="fieldName + '_' + optionIndex" type="checkbox" :value="option.value" v-model="value">
+              <label :for="fieldName + '_' + optionIndex">
                 <span class="check"><i class="fa fa-check"></i></span> {{ option.label || option.value }}
               </label>
             </div>
           </template>
           <template v-if="options && type === 'dropdown'">
-            <label :for="name" class="select-proxy-display">
-              <select :id="name" class="hidden-select form-control" v-model="value">
+            <label :for="fieldName" class="select-proxy-display">
+              <select :id="fieldName" class="hidden-select form-control" v-model="value">
                 <option value="">-- Select an option</option>
                 <option v-for="option in options" :key="option.value" :value="option.value">{{ option.label || option.value }}</option>
               </select>
@@ -85,8 +85,8 @@
           </template>
           <template v-if="type === 'toggle'">
             <div class="checkbox checkbox-icon">
-              <input :name="name" :id="name" type="checkbox" value="true" v-model="value">
-              <label :for="name">
+              <input :name="fieldName" :id="fieldName" type="checkbox" value="true" v-model="value">
+              <label :for="fieldName">
                 <span class="check"><i class="fa fa-check"></i></span> {{ toggleLabel }}
               </label>
             </div>
@@ -169,6 +169,7 @@ export default {
   props: [
     'type',
     'name',
+    'listName',
     'label',
     'html',
     'value',
@@ -196,6 +197,9 @@ export default {
   computed: {
     providerHtml() {
       return Handlebars.compile(this.html)(this);
+    },
+    fieldName() {
+      return this.listName ? `${this.listName}_${this.index}_${this.name}` : this.name;
     },
     validationRules() {
       // Hidden fields don't need validation
@@ -261,7 +265,7 @@ export default {
     children: findChildren,
     val(newValue) {
       if (typeof newValue !== 'undefined') {
-        this.value = newValue;
+        this.$set(this, 'value', newValue);
 
         return;
       }
@@ -348,7 +352,7 @@ export default {
     },
     addItem() {
       if (!Array.isArray(this.value)) {
-        this.value = [];
+        this.$set(this, 'value', []);
       }
 
       const item = JSON.parse(JSON.stringify(this.fields));
@@ -430,13 +434,17 @@ export default {
 
       this.providerPromise = new Promise((resolve) => {
         this.provider.then((result) => {
+          let value;
+
           if (_.isObject(result.data) && !Array.isArray(result.data)) {
-            this.value = _.omit(result.data, [
+            value = _.omit(result.data, [
               'package', 'version'
             ]);
           } else {
-            this.value = result.data;
+            value = result.data;
           }
+
+          this.$set(this, 'value', value);
 
           if (this.isFullScreenProvider) {
             delete window.currentProvider;
@@ -460,6 +468,8 @@ export default {
       this.$refs.provider.syncValue(this.value);
     } else if (this.type === 'dropdown' && typeof this.value === 'undefined') {
       this.updateParentValue('');
+    } else if (this.type === 'checkbox' && !Array.isArray(this.value)) {
+      this.$set(this, 'value', _.compact([this.value]));
     }
 
     if (this.ready) {

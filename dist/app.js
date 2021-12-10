@@ -1816,6 +1816,8 @@ var render = function() {
                                                                                           "fieldInstances",
                                                                                         refInFor: true,
                                                                                         attrs: {
+                                                                                          "list-name":
+                                                                                            _vm.name,
                                                                                           index: index
                                                                                         }
                                                                                       },
@@ -1990,7 +1992,10 @@ var render = function() {
                             : _vm._e(),
                           _vm._v(" "),
                           _vm.options && _vm.type === "radio"
-                            ? _vm._l(_vm.options, function(option) {
+                            ? _vm._l(_vm.options, function(
+                                option,
+                                optionIndex
+                              ) {
                                 return _c(
                                   "div",
                                   {
@@ -2008,8 +2013,8 @@ var render = function() {
                                         }
                                       ],
                                       attrs: {
-                                        name: _vm.name,
-                                        id: _vm.name + "_" + option.value,
+                                        name: _vm.fieldName,
+                                        id: _vm.fieldName + "_" + optionIndex,
                                         type: "radio"
                                       },
                                       domProps: {
@@ -2027,7 +2032,7 @@ var render = function() {
                                       "label",
                                       {
                                         attrs: {
-                                          for: _vm.name + "_" + option.value
+                                          for: _vm.fieldName + "_" + optionIndex
                                         }
                                       },
                                       [
@@ -2051,7 +2056,10 @@ var render = function() {
                             : _vm._e(),
                           _vm._v(" "),
                           _vm.options && _vm.type === "checkbox"
-                            ? _vm._l(_vm.options, function(option) {
+                            ? _vm._l(_vm.options, function(
+                                option,
+                                optionIndex
+                              ) {
                                 return _c(
                                   "div",
                                   {
@@ -2069,8 +2077,8 @@ var render = function() {
                                         }
                                       ],
                                       attrs: {
-                                        name: _vm.name,
-                                        id: _vm.name + "_" + option.value,
+                                        name: _vm.fieldName,
+                                        id: _vm.fieldName + "_" + optionIndex,
                                         type: "checkbox"
                                       },
                                       domProps: {
@@ -2107,7 +2115,7 @@ var render = function() {
                                       "label",
                                       {
                                         attrs: {
-                                          for: _vm.name + "_" + option.value
+                                          for: _vm.fieldName + "_" + optionIndex
                                         }
                                       },
                                       [
@@ -2136,7 +2144,7 @@ var render = function() {
                                   "label",
                                   {
                                     staticClass: "select-proxy-display",
-                                    attrs: { for: _vm.name }
+                                    attrs: { for: _vm.fieldName }
                                   },
                                   [
                                     _c(
@@ -2152,7 +2160,7 @@ var render = function() {
                                         ],
                                         staticClass:
                                           "hidden-select form-control",
-                                        attrs: { id: _vm.name },
+                                        attrs: { id: _vm.fieldName },
                                         on: {
                                           change: function($event) {
                                             var $$selectedVal = Array.prototype.filter
@@ -2224,8 +2232,8 @@ var render = function() {
                                         }
                                       ],
                                       attrs: {
-                                        name: _vm.name,
-                                        id: _vm.name,
+                                        name: _vm.fieldName,
+                                        id: _vm.fieldName,
                                         type: "checkbox",
                                         value: "true"
                                       },
@@ -2258,16 +2266,22 @@ var render = function() {
                                       }
                                     }),
                                     _vm._v(" "),
-                                    _c("label", { attrs: { for: _vm.name } }, [
-                                      _c("span", { staticClass: "check" }, [
-                                        _c("i", { staticClass: "fa fa-check" })
-                                      ]),
-                                      _vm._v(
-                                        " " +
-                                          _vm._s(_vm.toggleLabel) +
-                                          "\n            "
-                                      )
-                                    ])
+                                    _c(
+                                      "label",
+                                      { attrs: { for: _vm.fieldName } },
+                                      [
+                                        _c("span", { staticClass: "check" }, [
+                                          _c("i", {
+                                            staticClass: "fa fa-check"
+                                          })
+                                        ]),
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(_vm.toggleLabel) +
+                                            "\n            "
+                                        )
+                                      ]
+                                    )
                                   ]
                                 )
                               ]
@@ -2529,10 +2543,13 @@ VeeValidate.extend('required', {
       }
     };
   },
-  props: ['type', 'name', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'toggleLabel', 'package', 'fields', 'addLabel', 'index', 'mode', 'show', 'headingFieldName', 'emptyListPlaceholderHtml', 'rules', 'validate'],
+  props: ['type', 'name', 'listName', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'toggleLabel', 'package', 'fields', 'addLabel', 'index', 'mode', 'show', 'headingFieldName', 'emptyListPlaceholderHtml', 'rules', 'validate'],
   computed: {
     providerHtml: function providerHtml() {
       return Handlebars.compile(this.html)(this);
+    },
+    fieldName: function fieldName() {
+      return this.listName ? "".concat(this.listName, "_").concat(this.index, "_").concat(this.name) : this.name;
     },
     validationRules: function validationRules() {
       // Hidden fields don't need validation
@@ -2594,7 +2611,7 @@ VeeValidate.extend('required', {
     children: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findChildren"],
     val: function val(newValue) {
       if (typeof newValue !== 'undefined') {
-        this.value = newValue;
+        this.$set(this, 'value', newValue);
         return;
       }
 
@@ -2706,7 +2723,7 @@ VeeValidate.extend('required', {
     },
     addItem: function addItem() {
       if (!Array.isArray(this.value)) {
-        this.value = [];
+        this.$set(this, 'value', []);
       }
 
       var item = JSON.parse(JSON.stringify(this.fields));
@@ -2788,11 +2805,15 @@ VeeValidate.extend('required', {
       });
       this.providerPromise = new Promise(function (resolve) {
         _this4.provider.then(function (result) {
+          var value;
+
           if (_.isObject(result.data) && !Array.isArray(result.data)) {
-            _this4.value = _.omit(result.data, ['package', 'version']);
+            value = _.omit(result.data, ['package', 'version']);
           } else {
-            _this4.value = result.data;
+            value = result.data;
           }
+
+          _this4.$set(_this4, 'value', value);
 
           if (_this4.isFullScreenProvider) {
             delete window.currentProvider;
@@ -2814,6 +2835,8 @@ VeeValidate.extend('required', {
       this.$refs.provider.syncValue(this.value);
     } else if (this.type === 'dropdown' && typeof this.value === 'undefined') {
       this.updateParentValue('');
+    } else if (this.type === 'checkbox' && !Array.isArray(this.value)) {
+      this.$set(this, 'value', _.compact([this.value]));
     }
 
     if (this.ready) {
