@@ -192,6 +192,11 @@ if (Fliplet.Env.get('development')) {
               placeholder: 'Sample button',
               required: true
             }, {
+              name: 'showOnLoad',
+              type: 'toggle',
+              label: 'Show on load',
+              toggleLabel: 'Yes'
+            }, {
               type: 'provider',
               name: 'action',
               label: 'Choose an action to do when the button is pressed',
@@ -323,7 +328,7 @@ module.exports["default"] = module.exports, module.exports.__esModule = true;
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Application_vue_vue_type_template_id_44b1e432___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _Application_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
 
 
 
@@ -493,8 +498,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _components_Field__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
-/* harmony import */ var _libs_lookups__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
+/* harmony import */ var _libs_bus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
+/* harmony import */ var _components_Field__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(11);
+/* harmony import */ var _libs_lookups__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(16);
 
 
 //
@@ -522,11 +528,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    field: _components_Field__WEBPACK_IMPORTED_MODULE_2__["default"],
+    field: _components_Field__WEBPACK_IMPORTED_MODULE_3__["default"],
     validationObserver: VeeValidate.ValidationObserver
   },
   data: function data() {
@@ -538,9 +545,22 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     // Methods can be used when the Vue instance is passed as context for
     // the change and ready callback functions
-    find: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findAll"],
-    findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findOne"],
-    children: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findChildren"],
+    find: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["findAll"],
+    findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["findOne"],
+    children: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["findChildren"],
+    onUpdateValue: function onUpdateValue(name, value) {
+      this.fields[name] = value;
+
+      var field = _.find(this.configuration.fields, {
+        name: name
+      });
+
+      if (!field) {
+        return;
+      }
+
+      field.value = value;
+    },
     onSubmit: function onSubmit(valid) {
       var _this = this;
 
@@ -671,7 +691,11 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    Object(_libs_lookups__WEBPACK_IMPORTED_MODULE_3__["registerFields"])(this.configuration && this.configuration.fields);
+    Object(_libs_lookups__WEBPACK_IMPORTED_MODULE_4__["registerFields"])(this.configuration && this.configuration.fields);
+    _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$on('updateValue', this.onUpdateValue);
+  },
+  destroyed: function destroyed() {
+    _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$off('updateValue', this.onUpdateValue);
   }
 });
 
@@ -1491,9 +1515,22 @@ try {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Field_vue_vue_type_template_id_3a2f7ffa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
-/* harmony import */ var _Field_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
+// This bus can be used like a VueComponent
+// and it simulates the Node EventEmitter
+// bus.$emit bus.$on bus.$off
+var bus = new Vue();
+bus.callbacks = {};
+/* harmony default export */ __webpack_exports__["default"] = (bus);
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Field_vue_vue_type_template_id_3a2f7ffa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
+/* harmony import */ var _Field_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
 
 
 
@@ -1518,12 +1555,12 @@ component.options.__file = "src/components/Field.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Field_vue_vue_type_template_id_3a2f7ffa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Field_vue_vue_type_template_id_3a2f7ffa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Field_vue_vue_type_template_id_3a2f7ffa___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Field_vue_vue_type_template_id_3a2f7ffa___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
@@ -1531,7 +1568,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1816,6 +1853,8 @@ var render = function() {
                                                                                           "fieldInstances",
                                                                                         refInFor: true,
                                                                                         attrs: {
+                                                                                          "list-name":
+                                                                                            _vm.name,
                                                                                           index: index
                                                                                         }
                                                                                       },
@@ -1990,11 +2029,14 @@ var render = function() {
                             : _vm._e(),
                           _vm._v(" "),
                           _vm.options && _vm.type === "radio"
-                            ? _vm._l(_vm.options, function(option) {
+                            ? _vm._l(_vm.options, function(
+                                option,
+                                optionIndex
+                              ) {
                                 return _c(
                                   "div",
                                   {
-                                    key: option.value,
+                                    key: optionIndex,
                                     staticClass: "radio radio-icon"
                                   },
                                   [
@@ -2008,8 +2050,8 @@ var render = function() {
                                         }
                                       ],
                                       attrs: {
-                                        name: _vm.name,
-                                        id: _vm.name + "_" + option.value,
+                                        name: _vm.fieldName,
+                                        id: _vm.fieldName + "_" + optionIndex,
                                         type: "radio"
                                       },
                                       domProps: {
@@ -2027,7 +2069,7 @@ var render = function() {
                                       "label",
                                       {
                                         attrs: {
-                                          for: _vm.name + "_" + option.value
+                                          for: _vm.fieldName + "_" + optionIndex
                                         }
                                       },
                                       [
@@ -2051,11 +2093,14 @@ var render = function() {
                             : _vm._e(),
                           _vm._v(" "),
                           _vm.options && _vm.type === "checkbox"
-                            ? _vm._l(_vm.options, function(option) {
+                            ? _vm._l(_vm.options, function(
+                                option,
+                                optionIndex
+                              ) {
                                 return _c(
                                   "div",
                                   {
-                                    key: option.value,
+                                    key: optionIndex,
                                     staticClass: "checkbox checkbox-icon"
                                   },
                                   [
@@ -2069,8 +2114,8 @@ var render = function() {
                                         }
                                       ],
                                       attrs: {
-                                        name: _vm.name,
-                                        id: _vm.name + "_" + option.value,
+                                        name: _vm.fieldName,
+                                        id: _vm.fieldName + "_" + optionIndex,
                                         type: "checkbox"
                                       },
                                       domProps: {
@@ -2107,7 +2152,7 @@ var render = function() {
                                       "label",
                                       {
                                         attrs: {
-                                          for: _vm.name + "_" + option.value
+                                          for: _vm.fieldName + "_" + optionIndex
                                         }
                                       },
                                       [
@@ -2136,7 +2181,7 @@ var render = function() {
                                   "label",
                                   {
                                     staticClass: "select-proxy-display",
-                                    attrs: { for: _vm.name }
+                                    attrs: { for: _vm.fieldName }
                                   },
                                   [
                                     _c(
@@ -2152,7 +2197,7 @@ var render = function() {
                                         ],
                                         staticClass:
                                           "hidden-select form-control",
-                                        attrs: { id: _vm.name },
+                                        attrs: { id: _vm.fieldName },
                                         on: {
                                           change: function($event) {
                                             var $$selectedVal = Array.prototype.filter
@@ -2224,8 +2269,8 @@ var render = function() {
                                         }
                                       ],
                                       attrs: {
-                                        name: _vm.name,
-                                        id: _vm.name,
+                                        name: _vm.fieldName,
+                                        id: _vm.fieldName,
                                         type: "checkbox",
                                         value: "true"
                                       },
@@ -2258,16 +2303,22 @@ var render = function() {
                                       }
                                     }),
                                     _vm._v(" "),
-                                    _c("label", { attrs: { for: _vm.name } }, [
-                                      _c("span", { staticClass: "check" }, [
-                                        _c("i", { staticClass: "fa fa-check" })
-                                      ]),
-                                      _vm._v(
-                                        " " +
-                                          _vm._s(_vm.toggleLabel) +
-                                          "\n            "
-                                      )
-                                    ])
+                                    _c(
+                                      "label",
+                                      { attrs: { for: _vm.fieldName } },
+                                      [
+                                        _c("span", { staticClass: "check" }, [
+                                          _c("i", {
+                                            staticClass: "fa fa-check"
+                                          })
+                                        ]),
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(_vm.toggleLabel) +
+                                            "\n            "
+                                        )
+                                      ]
+                                    )
                                   ]
                                 )
                               ]
@@ -2339,16 +2390,16 @@ render._withStripped = true
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_3_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Field_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(14);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_3_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Field_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_3_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Field_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2359,7 +2410,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _libs_lookups__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
+/* harmony import */ var _libs_bus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
+/* harmony import */ var _libs_lookups__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(16);
 
 
 
@@ -2476,6 +2528,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 VeeValidate.extend('required', {
   validate: function validate(value) {
@@ -2529,10 +2582,13 @@ VeeValidate.extend('required', {
       }
     };
   },
-  props: ['type', 'name', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'toggleLabel', 'package', 'fields', 'addLabel', 'index', 'mode', 'show', 'headingFieldName', 'emptyListPlaceholderHtml', 'rules', 'validate'],
+  props: ['type', 'name', 'listName', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'toggleLabel', 'package', 'fields', 'addLabel', 'index', 'mode', 'show', 'headingFieldName', 'emptyListPlaceholderHtml', 'rules', 'validate'],
   computed: {
     providerHtml: function providerHtml() {
       return Handlebars.compile(this.html)(this);
+    },
+    fieldName: function fieldName() {
+      return this.listName ? "".concat(this.listName, "_").concat(this.index, "_").concat(this.name) : this.name;
     },
     validationRules: function validationRules() {
       // Hidden fields don't need validation
@@ -2566,11 +2622,12 @@ VeeValidate.extend('required', {
   },
   watch: {
     value: function value(newValue) {
-      if (this.$parent.$parent.$parent.type === 'list') {
+      // This field is used in a list
+      if (this.listName) {
         _.find(this.$parent.$parent.$parent.value[this.index], {
           name: this.name
         }).value = newValue;
-        this.$parent.$parent.$parent.onListValueChanged(this.name, newValue);
+        this.$parent.$parent.$parent.onListValueChanged(this.name);
         return;
       }
 
@@ -2589,25 +2646,19 @@ VeeValidate.extend('required', {
   methods: {
     // Methods can be used when the Vue instance is passed as context for
     // the change and ready callback functions
-    find: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findAll"],
-    findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findOne"],
-    children: _libs_lookups__WEBPACK_IMPORTED_MODULE_3__["findChildren"],
+    find: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["findAll"],
+    findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["findOne"],
+    children: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["findChildren"],
     val: function val(newValue) {
       if (typeof newValue !== 'undefined') {
-        this.value = newValue;
+        this.$set(this, 'value', newValue);
         return;
       }
 
       return this.value;
     },
     updateParentValue: function updateParentValue(value) {
-      this.$parent.$parent.fields[this.name] = value;
-
-      var field = _.find(this.$parent.$parent.configuration.fields, {
-        name: this.name
-      });
-
-      field.value = value;
+      _libs_bus__WEBPACK_IMPORTED_MODULE_3__["default"].$emit('updateValue', this.name, value);
     },
     onListValueChanged: function onListValueChanged(name) {
       if (name === this.headingFieldName) {
@@ -2706,7 +2757,7 @@ VeeValidate.extend('required', {
     },
     addItem: function addItem() {
       if (!Array.isArray(this.value)) {
-        this.value = [];
+        this.$set(this, 'value', []);
       }
 
       var item = JSON.parse(JSON.stringify(this.fields));
@@ -2788,11 +2839,15 @@ VeeValidate.extend('required', {
       });
       this.providerPromise = new Promise(function (resolve) {
         _this4.provider.then(function (result) {
+          var value;
+
           if (_.isObject(result.data) && !Array.isArray(result.data)) {
-            _this4.value = _.omit(result.data, ['package', 'version']);
+            value = _.omit(result.data, ['package', 'version']);
           } else {
-            _this4.value = result.data;
+            value = result.data;
           }
+
+          _this4.$set(_this4, 'value', value);
 
           if (_this4.isFullScreenProvider) {
             delete window.currentProvider;
@@ -2805,15 +2860,32 @@ VeeValidate.extend('required', {
           resolve(_this4.value);
         });
       });
+    },
+    normalizeOptions: function normalizeOptions() {
+      var _this5 = this;
+
+      if (['radio', 'checkbox', 'dropdown'].indexOf(this.type) > -1) {
+        _.forEach(this.options, function (option, i) {
+          if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_1___default()(option) !== 'object') {
+            _this5.options[i] = {
+              value: option
+            };
+          }
+        });
+      }
     }
   },
   mounted: function mounted() {
-    this.initProvider(); // Ensure model-less values are synced with the validation provider
+    this.initProvider();
+    this.normalizeOptions(); // Ensure model-less values are synced with the validation provider
 
     if (this.type === 'list') {
       this.$refs.provider.syncValue(this.value);
     } else if (this.type === 'dropdown' && typeof this.value === 'undefined') {
+      this.value = '';
       this.updateParentValue('');
+    } else if (this.type === 'checkbox' && !Array.isArray(this.value)) {
+      this.$set(this, 'value', _.compact([this.value]));
     }
 
     if (this.ready) {
@@ -2824,7 +2896,7 @@ VeeValidate.extend('required', {
 });
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2964,7 +3036,7 @@ Fliplet.Helper.field = function (name) {
 };
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
