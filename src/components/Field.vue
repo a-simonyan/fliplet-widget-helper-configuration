@@ -224,7 +224,7 @@ export default {
       // Use custom validate function as custom validation rule
       // https://vee-validate.logaretm.com/v3/guide/basics.html#rule-arguments
       if (this.validate) {
-        const name = `validate-${this.name}`;
+        const name = `validate-${this.fieldName}`;
         const validate = new Function(this.validate)();
 
         VeeValidate.extend(name, validate);
