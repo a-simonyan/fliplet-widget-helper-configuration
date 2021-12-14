@@ -2883,7 +2883,6 @@ VeeValidate.extend('required', {
       this.$refs.provider.syncValue(this.value);
     } else if (this.type === 'dropdown' && typeof this.value === 'undefined') {
       this.value = '';
-      this.updateParentValue('');
     } else if (this.type === 'checkbox' && !Array.isArray(this.value)) {
       this.$set(this, 'value', _.compact([this.value]));
     }
