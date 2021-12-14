@@ -224,7 +224,7 @@ export default {
       // Use custom validate function as custom validation rule
       // https://vee-validate.logaretm.com/v3/guide/basics.html#rule-arguments
       if (this.validate) {
-        const name = `validate-${this.name}`;
+        const name = `validate-${this.fieldName}`;
         const validate = new Function(this.validate)();
 
         VeeValidate.extend(name, validate);
@@ -396,6 +396,7 @@ export default {
         $provider.find('[data-open-provider]').click((event) => {
           event.preventDefault();
           this.openProvider();
+          Fliplet.Widget.setSaveButtonLabel('Save');
           window.currentProvider = this.provider;
         });
 
@@ -449,6 +450,8 @@ export default {
             delete this.provider;
 
             this.providerPromise = undefined;
+
+            Fliplet.Widget.resetSaveButtonLabel();
 
             this.initProvider();
           }

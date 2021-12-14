@@ -76,12 +76,6 @@ export default {
         return;
       }
 
-      if (window.currentProvider) {
-        window.currentProvider.forwardSaveRequest();
-
-        return;
-      }
-
       var beforeSave;
 
       await Promise.all(this.$refs.fieldInstances.map((field) => {
@@ -145,6 +139,12 @@ export default {
   },
   mounted() {
     Fliplet.Widget.onSaveRequest(() => {
+      if (window.currentProvider) {
+        window.currentProvider.forwardSaveRequest();
+
+        return;
+      }
+
       return this.$refs.observer.validate()
         .then((valid) => {
           return this.onSubmit(valid);
