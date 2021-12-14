@@ -589,16 +589,7 @@ __webpack_require__.r(__webpack_exports__);
                 return _context.abrupt("return");
 
               case 4:
-                if (!window.currentProvider) {
-                  _context.next = 7;
-                  break;
-                }
-
-                window.currentProvider.forwardSaveRequest();
-                return _context.abrupt("return");
-
-              case 7:
-                _context.next = 9;
+                _context.next = 6;
                 return Promise.all(_this.$refs.fieldInstances.map(function (field) {
                   if (field.show === false) {
                     delete _this.fields[field.name];
@@ -608,7 +599,7 @@ __webpack_require__.r(__webpack_exports__);
                   return field.onSubmit();
                 }));
 
-              case 9:
+              case 6:
                 if (_this.configuration.beforeSave) {
                   beforeSaveFunction = new Function(_this.configuration.beforeSave)();
 
@@ -659,7 +650,7 @@ __webpack_require__.r(__webpack_exports__);
                   });
                 });
 
-              case 12:
+              case 9:
               case "end":
                 return _context.stop();
             }
@@ -672,6 +663,11 @@ __webpack_require__.r(__webpack_exports__);
     var _this2 = this;
 
     Fliplet.Widget.onSaveRequest(function () {
+      if (window.currentProvider) {
+        window.currentProvider.forwardSaveRequest();
+        return;
+      }
+
       return _this2.$refs.observer.validate().then(function (valid) {
         return _this2.onSubmit(valid);
       });
@@ -2611,7 +2607,7 @@ VeeValidate.extend('required', {
 
 
       if (this.validate) {
-        var name = "validate-".concat(this.name);
+        var name = "validate-".concat(this.fieldName);
         var validate = new Function(this.validate)();
         VeeValidate.extend(name, validate);
         rules[name] = true;
@@ -2806,6 +2802,7 @@ VeeValidate.extend('required', {
 
           _this3.openProvider();
 
+          Fliplet.Widget.setSaveButtonLabel('Save');
           window.currentProvider = _this3.provider;
         });
         this.eventsBound = true;
@@ -2853,6 +2850,7 @@ VeeValidate.extend('required', {
             delete window.currentProvider;
             delete _this4.provider;
             _this4.providerPromise = undefined;
+            Fliplet.Widget.resetSaveButtonLabel();
 
             _this4.initProvider();
           }
