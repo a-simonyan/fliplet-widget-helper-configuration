@@ -2569,8 +2569,6 @@ VeeValidate.extend('required', {
           name: 'fields',
           pull: false
         },
-        scrollSensitivity: 116,
-        scrollSpeed: 10,
         onStart: this.onStart,
         onEnd: this.onEnd,
         onUpdate: this.onSort,
@@ -2716,15 +2714,15 @@ VeeValidate.extend('required', {
       }))();
     },
     collapseAccordions: function collapseAccordions($context) {
-      $context.find('.panel-collapse').collapse('hide');
-      $context.find('.fa-chevron-down').addClass('fa-chevron-right').removeClass('fa-chevron-down');
+      $context.find(':not(.panel-group) .panel-collapse').collapse('hide');
+      $context.find(':not(.panel-group) .panel-heading .fa-chevron-down').addClass('fa-chevron-right').removeClass('fa-chevron-down');
     },
     expandAccordions: function expandAccordions($context) {
-      $context.find('.panel-collapse').collapse('show');
-      $context.find('.fa-chevron-right').addClass('fa-chevron-down').removeClass('fa-chevron-right');
+      $context.find(':not(.panel-group) .panel-collapse').collapse('show');
+      $context.find(':not(.panel-group) .panel-heading .fa-chevron-right').addClass('fa-chevron-down').removeClass('fa-chevron-right');
     },
     allAccordionsCollapsed: function allAccordionsCollapsed($context) {
-      return !$context.find('.fa-chevron-down').length;
+      return !$context.find(':not(.panel-group) .panel-heading .fa-chevron-down').length;
     },
     onToggleAccordion: function onToggleAccordion(event) {
       var $target = $(event.target).parent().find('.chevron');
@@ -2759,8 +2757,8 @@ VeeValidate.extend('required', {
       var item = JSON.parse(JSON.stringify(this.fields));
       this.value.push(item);
     },
-    onStart: function onStart() {
-      this.collapseAccordions();
+    onStart: function onStart(event) {
+      this.collapseAccordions($(event.target));
       this.onSubmit();
     },
     onEnd: function onEnd() {
