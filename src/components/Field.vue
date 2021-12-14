@@ -396,6 +396,7 @@ export default {
         $provider.find('[data-open-provider]').click((event) => {
           event.preventDefault();
           this.openProvider();
+          Fliplet.Widget.setSaveButtonLabel('Save');
           window.currentProvider = this.provider;
         });
 
@@ -449,6 +450,8 @@ export default {
             delete this.provider;
 
             this.providerPromise = undefined;
+
+            Fliplet.Widget.resetSaveButtonLabel();
 
             this.initProvider();
           }
