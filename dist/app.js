@@ -300,25 +300,14 @@ if (Fliplet.Env.get('development')) {
 function _typeof(obj) {
   "@babel/helpers - typeof";
 
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-
-    module.exports["default"] = module.exports, module.exports.__esModule = true;
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-
-    module.exports["default"] = module.exports, module.exports.__esModule = true;
-  }
-
-  return _typeof(obj);
+  return (module.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  }, module.exports.__esModule = true, module.exports["default"] = module.exports), _typeof(obj);
 }
 
-module.exports = _typeof;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _typeof, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 2 */
@@ -373,7 +362,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -386,7 +375,7 @@ var render = function() {
         scopedSlots: _vm._u([
           {
             key: "default",
-            fn: function(ref) {
+            fn: function (ref) {
               var validate = ref.validate
               return [
                 _c(
@@ -395,11 +384,11 @@ var render = function() {
                     ref: "form",
                     staticClass: "form-horizontal",
                     on: {
-                      submit: function($event) {
+                      submit: function ($event) {
                         $event.preventDefault()
                         validate().then(_vm.onSubmit)
-                      }
-                    }
+                      },
+                    },
                   },
                   [
                     _c("header", [
@@ -416,20 +405,20 @@ var render = function() {
                                 staticClass: "help-icon",
                                 attrs: {
                                   href: _vm.supportUrl,
-                                  target: "_blank"
-                                }
+                                  target: "_blank",
+                                },
                               },
                               [
                                 _c("i", {
-                                  staticClass: "fa fa-question-circle-o"
-                                })
+                                  staticClass: "fa fa-question-circle-o",
+                                }),
                               ]
                             )
-                          : _vm._e()
-                      ])
+                          : _vm._e(),
+                      ]),
                     ]),
                     _vm._v(" "),
-                    _vm._l(_vm.configuration.fields, function(field) {
+                    _vm._l(_vm.configuration.fields, function (field) {
                       return [
                         _c(
                           "field",
@@ -437,13 +426,13 @@ var render = function() {
                             {
                               key: field.name,
                               ref: "fieldInstances",
-                              refInFor: true
+                              refInFor: true,
                             },
                             "field",
                             field,
                             false
                           )
-                        )
+                        ),
                       ]
                     }),
                     _vm._v(" "),
@@ -456,20 +445,20 @@ var render = function() {
                               _c("input", {
                                 ref: "submitButton",
                                 staticClass: "btn btn-primary",
-                                attrs: { type: "submit" }
-                              })
+                                attrs: { type: "submit" },
+                              }),
                             ]
-                          )
+                          ),
                         ])
-                      : _vm._e()
+                      : _vm._e(),
                   ],
                   2
-                )
+                ),
               ]
-            }
-          }
-        ])
-      })
+            },
+          },
+        ]),
+      }),
     ],
     1
   )
@@ -735,8 +724,7 @@ function _asyncToGenerator(fn) {
   };
 }
 
-module.exports = _asyncToGenerator;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _asyncToGenerator, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 8 */
@@ -1571,7 +1559,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -1581,7 +1569,7 @@ var render = function() {
     scopedSlots: _vm._u([
       {
         key: "default",
-        fn: function(ref) {
+        fn: function (ref) {
           var errors = ref.errors
           return [
             _c(
@@ -1592,16 +1580,16 @@ var render = function() {
                     name: "show",
                     rawName: "v-show",
                     value: typeof _vm.show === "undefined" || _vm.show,
-                    expression: "(typeof show === 'undefined' || show)"
-                  }
+                    expression: "(typeof show === 'undefined' || show)",
+                  },
                 ],
                 class: [
                   "form-group clearfix",
                   {
-                    "has-error": errors.length
-                  }
+                    "has-error": errors.length,
+                  },
                 ],
-                attrs: { "data-field": _vm.name, "data-type": _vm.type }
+                attrs: { "data-field": _vm.name, "data-type": _vm.type },
               },
               [
                 _vm.type === "hidden"
@@ -1611,19 +1599,19 @@ var render = function() {
                           name: "model",
                           rawName: "v-model",
                           value: _vm.value,
-                          expression: "value"
-                        }
+                          expression: "value",
+                        },
                       ],
                       attrs: { type: "hidden" },
                       domProps: { value: _vm.value },
                       on: {
-                        input: function($event) {
+                        input: function ($event) {
                           if ($event.target.composing) {
                             return
                           }
                           _vm.value = $event.target.value
-                        }
-                      }
+                        },
+                      },
                     })
                   : [
                       _c("div", { staticClass: "col-sm-4 control-label" }, [
@@ -1634,9 +1622,9 @@ var render = function() {
                         _vm.description
                           ? _c("p", {
                               staticClass: "help-block",
-                              domProps: { innerHTML: _vm._s(_vm.description) }
+                              domProps: { innerHTML: _vm._s(_vm.description) },
                             })
-                          : _vm._e()
+                          : _vm._e(),
                       ]),
                       _vm._v(" "),
                       _c(
@@ -1657,236 +1645,251 @@ var render = function() {
                                             name: "sortable",
                                             rawName: "v-sortable",
                                             value: _vm.sortableOptions,
-                                            expression: "sortableOptions"
-                                          }
-                                        ]
-                                      },
-                                      _vm._l(_vm.value, function(
-                                        fieldList,
-                                        index
-                                      ) {
-                                        return _c(
-                                          "div",
-                                          {
-                                            key: index,
-                                            staticClass: "panel panel-default"
+                                            expression: "sortableOptions",
                                           },
-                                          [
-                                            _c("validation-observer", {
-                                              scopedSlots: _vm._u(
-                                                [
-                                                  {
-                                                    key: "default",
-                                                    fn: function(ref) {
-                                                      var failed = ref.failed
-                                                      return [
-                                                        _c(
-                                                          "div",
-                                                          {
-                                                            class: [
-                                                              "panel-wrapper",
-                                                              {
-                                                                "has-error": failed
-                                                              }
-                                                            ]
-                                                          },
-                                                          [
-                                                            _c(
-                                                              "div",
-                                                              {
-                                                                staticClass:
-                                                                  "panel-heading ui-sortable-handle"
-                                                              },
-                                                              [
-                                                                _c(
-                                                                  "h4",
-                                                                  {
-                                                                    staticClass:
-                                                                      "panel-title",
-                                                                    attrs: {
-                                                                      "data-toggle":
-                                                                        "collapse"
-                                                                    }
-                                                                  },
-                                                                  [
-                                                                    _c(
-                                                                      "div",
-                                                                      {
-                                                                        staticClass:
-                                                                          "screen-reorder-handle"
-                                                                      },
-                                                                      [
-                                                                        _c(
-                                                                          "i",
-                                                                          {
-                                                                            staticClass:
-                                                                              "fa fa-ellipsis-v"
-                                                                          }
-                                                                        ),
-                                                                        _c(
-                                                                          "i",
-                                                                          {
-                                                                            staticClass:
-                                                                              "fa fa-ellipsis-v"
-                                                                          }
-                                                                        )
-                                                                      ]
-                                                                    ),
-                                                                    _vm._v(" "),
-                                                                    _c("span", {
+                                        ],
+                                      },
+                                      _vm._l(
+                                        _vm.value,
+                                        function (fieldList, index) {
+                                          return _c(
+                                            "div",
+                                            {
+                                              key: index,
+                                              staticClass:
+                                                "panel panel-default",
+                                            },
+                                            [
+                                              _c("validation-observer", {
+                                                scopedSlots: _vm._u(
+                                                  [
+                                                    {
+                                                      key: "default",
+                                                      fn: function (ref) {
+                                                        var failed = ref.failed
+                                                        return [
+                                                          _c(
+                                                            "div",
+                                                            {
+                                                              class: [
+                                                                "panel-wrapper",
+                                                                {
+                                                                  "has-error":
+                                                                    failed,
+                                                                },
+                                                              ],
+                                                            },
+                                                            [
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "panel-heading ui-sortable-handle",
+                                                                },
+                                                                [
+                                                                  _c(
+                                                                    "h4",
+                                                                    {
                                                                       staticClass:
-                                                                        "fa fa-chevron-right chevron",
-                                                                      on: {
-                                                                        click: function(
-                                                                          $event
-                                                                        ) {
-                                                                          $event.preventDefault()
-                                                                          return _vm.onToggleAccordion.apply(
-                                                                            null,
-                                                                            arguments
-                                                                          )
+                                                                        "panel-title",
+                                                                      attrs: {
+                                                                        "data-toggle":
+                                                                          "collapse",
+                                                                      },
+                                                                    },
+                                                                    [
+                                                                      _c(
+                                                                        "div",
+                                                                        {
+                                                                          staticClass:
+                                                                            "screen-reorder-handle",
+                                                                        },
+                                                                        [
+                                                                          _c(
+                                                                            "i",
+                                                                            {
+                                                                              staticClass:
+                                                                                "fa fa-ellipsis-v",
+                                                                            }
+                                                                          ),
+                                                                          _c(
+                                                                            "i",
+                                                                            {
+                                                                              staticClass:
+                                                                                "fa fa-ellipsis-v",
+                                                                            }
+                                                                          ),
+                                                                        ]
+                                                                      ),
+                                                                      _vm._v(
+                                                                        " "
+                                                                      ),
+                                                                      _c(
+                                                                        "span",
+                                                                        {
+                                                                          staticClass:
+                                                                            "fa fa-chevron-right chevron",
+                                                                          on: {
+                                                                            click:
+                                                                              function (
+                                                                                $event
+                                                                              ) {
+                                                                                $event.preventDefault()
+                                                                                return _vm.onToggleAccordion.apply(
+                                                                                  null,
+                                                                                  arguments
+                                                                                )
+                                                                              },
+                                                                          },
                                                                         }
-                                                                      }
-                                                                    }),
-                                                                    _vm._v(" "),
-                                                                    _c(
-                                                                      "span",
-                                                                      {
-                                                                        staticClass:
-                                                                          "panel-title-text",
-                                                                        on: {
-                                                                          click: function(
+                                                                      ),
+                                                                      _vm._v(
+                                                                        " "
+                                                                      ),
+                                                                      _c(
+                                                                        "span",
+                                                                        {
+                                                                          staticClass:
+                                                                            "panel-title-text",
+                                                                          on: {
+                                                                            click:
+                                                                              function (
+                                                                                $event
+                                                                              ) {
+                                                                                $event.preventDefault()
+                                                                                return _vm.onToggleAccordion.apply(
+                                                                                  null,
+                                                                                  arguments
+                                                                                )
+                                                                              },
+                                                                          },
+                                                                        },
+                                                                        [
+                                                                          _vm._v(
+                                                                            _vm._s(
+                                                                              _vm._f(
+                                                                                "panelHeading"
+                                                                              )(
+                                                                                fieldList,
+                                                                                _vm.headingFieldName
+                                                                              )
+                                                                            )
+                                                                          ),
+                                                                        ]
+                                                                      ),
+                                                                    ]
+                                                                  ),
+                                                                  _vm._v(" "),
+                                                                  _c(
+                                                                    "a",
+                                                                    {
+                                                                      attrs: {
+                                                                        href: "#",
+                                                                      },
+                                                                      on: {
+                                                                        click:
+                                                                          function (
                                                                             $event
                                                                           ) {
                                                                             $event.preventDefault()
-                                                                            return _vm.onToggleAccordion.apply(
-                                                                              null,
-                                                                              arguments
+                                                                            return _vm.onDeleteItem(
+                                                                              index
                                                                             )
-                                                                          }
-                                                                        }
+                                                                          },
                                                                       },
-                                                                      [
-                                                                        _vm._v(
-                                                                          _vm._s(
-                                                                            _vm._f(
-                                                                              "panelHeading"
-                                                                            )(
-                                                                              fieldList,
-                                                                              _vm.headingFieldName
-                                                                            )
-                                                                          )
-                                                                        )
-                                                                      ]
-                                                                    )
-                                                                  ]
-                                                                ),
-                                                                _vm._v(" "),
-                                                                _c(
-                                                                  "a",
-                                                                  {
-                                                                    attrs: {
-                                                                      href: "#"
                                                                     },
-                                                                    on: {
-                                                                      click: function(
-                                                                        $event
-                                                                      ) {
-                                                                        $event.preventDefault()
-                                                                        return _vm.onDeleteItem(
-                                                                          index
-                                                                        )
-                                                                      }
-                                                                    }
-                                                                  },
-                                                                  [
-                                                                    _c("span", {
+                                                                    [
+                                                                      _c(
+                                                                        "span",
+                                                                        {
+                                                                          staticClass:
+                                                                            "icon-delete fa fa-trash",
+                                                                        }
+                                                                      ),
+                                                                    ]
+                                                                  ),
+                                                                ]
+                                                              ),
+                                                              _vm._v(" "),
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "panel-collapse collapse",
+                                                                },
+                                                                [
+                                                                  _c(
+                                                                    "div",
+                                                                    {
                                                                       staticClass:
-                                                                        "icon-delete fa fa-trash"
-                                                                    })
-                                                                  ]
-                                                                )
-                                                              ]
-                                                            ),
-                                                            _vm._v(" "),
-                                                            _c(
-                                                              "div",
-                                                              {
-                                                                staticClass:
-                                                                  "panel-collapse collapse"
-                                                              },
-                                                              [
-                                                                _c(
-                                                                  "div",
-                                                                  {
-                                                                    staticClass:
-                                                                      "panel-body"
-                                                                  },
-                                                                  [
-                                                                    _c(
-                                                                      "div",
-                                                                      {
-                                                                        staticClass:
-                                                                          "form"
-                                                                      },
-                                                                      [
-                                                                        _c(
-                                                                          "div",
-                                                                          [
-                                                                            _vm._l(
-                                                                              fieldList,
-                                                                              function(
-                                                                                field
-                                                                              ) {
-                                                                                return [
-                                                                                  _c(
-                                                                                    "field",
-                                                                                    _vm._b(
-                                                                                      {
-                                                                                        key:
-                                                                                          field.name,
-                                                                                        ref:
-                                                                                          "fieldInstances",
-                                                                                        refInFor: true,
-                                                                                        attrs: {
-                                                                                          "list-name":
-                                                                                            _vm.name,
-                                                                                          index: index
-                                                                                        }
-                                                                                      },
+                                                                        "panel-body",
+                                                                    },
+                                                                    [
+                                                                      _c(
+                                                                        "div",
+                                                                        {
+                                                                          staticClass:
+                                                                            "form",
+                                                                        },
+                                                                        [
+                                                                          _c(
+                                                                            "div",
+                                                                            [
+                                                                              _vm._l(
+                                                                                fieldList,
+                                                                                function (
+                                                                                  field
+                                                                                ) {
+                                                                                  return [
+                                                                                    _c(
                                                                                       "field",
-                                                                                      field,
-                                                                                      false
-                                                                                    )
-                                                                                  )
-                                                                                ]
-                                                                              }
-                                                                            )
-                                                                          ],
-                                                                          2
-                                                                        )
-                                                                      ]
-                                                                    )
-                                                                  ]
-                                                                )
-                                                              ]
-                                                            )
-                                                          ]
-                                                        )
-                                                      ]
-                                                    }
-                                                  }
-                                                ],
-                                                null,
-                                                true
-                                              )
-                                            })
-                                          ],
-                                          1
-                                        )
-                                      }),
+                                                                                      _vm._b(
+                                                                                        {
+                                                                                          key: field.name,
+                                                                                          ref: "fieldInstances",
+                                                                                          refInFor: true,
+                                                                                          attrs:
+                                                                                            {
+                                                                                              "list-name":
+                                                                                                _vm.name,
+                                                                                              index:
+                                                                                                index,
+                                                                                            },
+                                                                                        },
+                                                                                        "field",
+                                                                                        field,
+                                                                                        false
+                                                                                      )
+                                                                                    ),
+                                                                                  ]
+                                                                                }
+                                                                              ),
+                                                                            ],
+                                                                            2
+                                                                          ),
+                                                                        ]
+                                                                      ),
+                                                                    ]
+                                                                  ),
+                                                                ]
+                                                              ),
+                                                            ]
+                                                          ),
+                                                        ]
+                                                      },
+                                                    },
+                                                  ],
+                                                  null,
+                                                  true
+                                                ),
+                                              }),
+                                            ],
+                                            1
+                                          )
+                                        }
+                                      ),
                                       0
-                                    )
+                                    ),
                                   ]
                                 ),
                                 _vm._v(" "),
@@ -1895,8 +1898,8 @@ var render = function() {
                                       domProps: {
                                         innerHTML: _vm._s(
                                           _vm.emptyListPlaceholderHtml
-                                        )
-                                      }
+                                        ),
+                                      },
                                     })
                                   : _vm._e(),
                                 _vm._v(" "),
@@ -1907,14 +1910,14 @@ var render = function() {
                                       staticClass: "btn btn-default",
                                       attrs: { href: "#" },
                                       on: {
-                                        click: function($event) {
+                                        click: function ($event) {
                                           $event.preventDefault()
                                           return _vm.addItem.apply(
                                             null,
                                             arguments
                                           )
-                                        }
-                                      }
+                                        },
+                                      },
                                     },
                                     [_vm._v(_vm._s(_vm.addLabel || "Add"))]
                                   ),
@@ -1927,19 +1930,19 @@ var render = function() {
                                             "btn btn-link expand-items",
                                           attrs: { href: "#" },
                                           on: {
-                                            click: function($event) {
+                                            click: function ($event) {
                                               $event.preventDefault()
                                               return _vm.onToggleAccordions.apply(
                                                 null,
                                                 arguments
                                               )
-                                            }
-                                          }
+                                            },
+                                          },
                                         },
                                         [_vm._v("Expand/Collapse All")]
                                       )
-                                    : _vm._e()
-                                ])
+                                    : _vm._e(),
+                                ]),
                               ])
                             : _vm._e(),
                           _vm._v(" "),
@@ -1950,23 +1953,23 @@ var render = function() {
                                     name: "model",
                                     rawName: "v-model",
                                     value: _vm.value,
-                                    expression: "value"
-                                  }
+                                    expression: "value",
+                                  },
                                 ],
                                 staticClass: "form-control",
                                 attrs: {
                                   type: "text",
-                                  placeholder: _vm.placeholder
+                                  placeholder: _vm.placeholder,
                                 },
                                 domProps: { value: _vm.value },
                                 on: {
-                                  input: function($event) {
+                                  input: function ($event) {
                                     if ($event.target.composing) {
                                       return
                                     }
                                     _vm.value = $event.target.value
-                                  }
-                                }
+                                  },
+                                },
                               })
                             : _vm._e(),
                           _vm._v(" "),
@@ -1977,23 +1980,23 @@ var render = function() {
                                     name: "model",
                                     rawName: "v-model",
                                     value: _vm.value,
-                                    expression: "value"
-                                  }
+                                    expression: "value",
+                                  },
                                 ],
                                 staticClass: "form-control",
                                 attrs: {
                                   type: "email",
-                                  placeholder: _vm.placeholder
+                                  placeholder: _vm.placeholder,
                                 },
                                 domProps: { value: _vm.value },
                                 on: {
-                                  input: function($event) {
+                                  input: function ($event) {
                                     if ($event.target.composing) {
                                       return
                                     }
                                     _vm.value = $event.target.value
-                                  }
-                                }
+                                  },
+                                },
                               })
                             : _vm._e(),
                           _vm._v(" "),
@@ -2004,171 +2007,179 @@ var render = function() {
                                     name: "model",
                                     rawName: "v-model",
                                     value: _vm.value,
-                                    expression: "value"
-                                  }
+                                    expression: "value",
+                                  },
                                 ],
                                 staticClass: "form-control",
                                 attrs: {
                                   placeholder: _vm.placeholder,
-                                  rows: _vm.rows || 4
+                                  rows: _vm.rows || 4,
                                 },
                                 domProps: { value: _vm.value },
                                 on: {
-                                  input: function($event) {
+                                  input: function ($event) {
                                     if ($event.target.composing) {
                                       return
                                     }
                                     _vm.value = $event.target.value
-                                  }
-                                }
+                                  },
+                                },
                               })
                             : _vm._e(),
                           _vm._v(" "),
                           _vm.options && _vm.type === "radio"
-                            ? _vm._l(_vm.options, function(
-                                option,
-                                optionIndex
-                              ) {
-                                return _c(
-                                  "div",
-                                  {
-                                    key: optionIndex,
-                                    staticClass: "radio radio-icon"
-                                  },
-                                  [
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.value,
-                                          expression: "value"
-                                        }
-                                      ],
-                                      attrs: {
-                                        name: _vm.fieldName,
-                                        id: _vm.fieldName + "_" + optionIndex,
-                                        type: "radio"
-                                      },
-                                      domProps: {
-                                        value: option.value,
-                                        checked: _vm._q(_vm.value, option.value)
-                                      },
-                                      on: {
-                                        change: function($event) {
-                                          _vm.value = option.value
-                                        }
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c(
-                                      "label",
-                                      {
+                            ? _vm._l(
+                                _vm.options,
+                                function (option, optionIndex) {
+                                  return _c(
+                                    "div",
+                                    {
+                                      key: optionIndex,
+                                      staticClass: "radio radio-icon",
+                                    },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.value,
+                                            expression: "value",
+                                          },
+                                        ],
                                         attrs: {
-                                          for: _vm.fieldName + "_" + optionIndex
-                                        }
-                                      },
-                                      [
-                                        _c("span", { staticClass: "check" }, [
-                                          _c("i", {
-                                            staticClass: "fa fa-circle"
-                                          })
-                                        ]),
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              option.label || option.value
-                                            ) +
-                                            "\n            "
-                                        )
-                                      ]
-                                    )
-                                  ]
-                                )
-                              })
+                                          name: _vm.fieldName,
+                                          id: _vm.fieldName + "_" + optionIndex,
+                                          type: "radio",
+                                        },
+                                        domProps: {
+                                          value: option.value,
+                                          checked: _vm._q(
+                                            _vm.value,
+                                            option.value
+                                          ),
+                                        },
+                                        on: {
+                                          change: function ($event) {
+                                            _vm.value = option.value
+                                          },
+                                        },
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "label",
+                                        {
+                                          attrs: {
+                                            for:
+                                              _vm.fieldName + "_" + optionIndex,
+                                          },
+                                        },
+                                        [
+                                          _c("span", { staticClass: "check" }, [
+                                            _c("i", {
+                                              staticClass: "fa fa-circle",
+                                            }),
+                                          ]),
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                option.label || option.value
+                                              ) +
+                                              "\n            "
+                                          ),
+                                        ]
+                                      ),
+                                    ]
+                                  )
+                                }
+                              )
                             : _vm._e(),
                           _vm._v(" "),
                           _vm.options && _vm.type === "checkbox"
-                            ? _vm._l(_vm.options, function(
-                                option,
-                                optionIndex
-                              ) {
-                                return _c(
-                                  "div",
-                                  {
-                                    key: optionIndex,
-                                    staticClass: "checkbox checkbox-icon"
-                                  },
-                                  [
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.value,
-                                          expression: "value"
-                                        }
-                                      ],
-                                      attrs: {
-                                        name: _vm.fieldName,
-                                        id: _vm.fieldName + "_" + optionIndex,
-                                        type: "checkbox"
-                                      },
-                                      domProps: {
-                                        value: option.value,
-                                        checked: Array.isArray(_vm.value)
-                                          ? _vm._i(_vm.value, option.value) > -1
-                                          : _vm.value
-                                      },
-                                      on: {
-                                        change: function($event) {
-                                          var $$a = _vm.value,
-                                            $$el = $event.target,
-                                            $$c = $$el.checked ? true : false
-                                          if (Array.isArray($$a)) {
-                                            var $$v = option.value,
-                                              $$i = _vm._i($$a, $$v)
-                                            if ($$el.checked) {
-                                              $$i < 0 &&
-                                                (_vm.value = $$a.concat([$$v]))
-                                            } else {
-                                              $$i > -1 &&
-                                                (_vm.value = $$a
-                                                  .slice(0, $$i)
-                                                  .concat($$a.slice($$i + 1)))
-                                            }
-                                          } else {
-                                            _vm.value = $$c
-                                          }
-                                        }
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c(
-                                      "label",
-                                      {
+                            ? _vm._l(
+                                _vm.options,
+                                function (option, optionIndex) {
+                                  return _c(
+                                    "div",
+                                    {
+                                      key: optionIndex,
+                                      staticClass: "checkbox checkbox-icon",
+                                    },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.value,
+                                            expression: "value",
+                                          },
+                                        ],
                                         attrs: {
-                                          for: _vm.fieldName + "_" + optionIndex
-                                        }
-                                      },
-                                      [
-                                        _c("span", { staticClass: "check" }, [
-                                          _c("i", {
-                                            staticClass: "fa fa-check"
-                                          })
-                                        ]),
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              option.label || option.value
-                                            ) +
-                                            "\n            "
-                                        )
-                                      ]
-                                    )
-                                  ]
-                                )
-                              })
+                                          name: _vm.fieldName,
+                                          id: _vm.fieldName + "_" + optionIndex,
+                                          type: "checkbox",
+                                        },
+                                        domProps: {
+                                          value: option.value,
+                                          checked: Array.isArray(_vm.value)
+                                            ? _vm._i(_vm.value, option.value) >
+                                              -1
+                                            : _vm.value,
+                                        },
+                                        on: {
+                                          change: function ($event) {
+                                            var $$a = _vm.value,
+                                              $$el = $event.target,
+                                              $$c = $$el.checked ? true : false
+                                            if (Array.isArray($$a)) {
+                                              var $$v = option.value,
+                                                $$i = _vm._i($$a, $$v)
+                                              if ($$el.checked) {
+                                                $$i < 0 &&
+                                                  (_vm.value = $$a.concat([
+                                                    $$v,
+                                                  ]))
+                                              } else {
+                                                $$i > -1 &&
+                                                  (_vm.value = $$a
+                                                    .slice(0, $$i)
+                                                    .concat($$a.slice($$i + 1)))
+                                              }
+                                            } else {
+                                              _vm.value = $$c
+                                            }
+                                          },
+                                        },
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "label",
+                                        {
+                                          attrs: {
+                                            for:
+                                              _vm.fieldName + "_" + optionIndex,
+                                          },
+                                        },
+                                        [
+                                          _c("span", { staticClass: "check" }, [
+                                            _c("i", {
+                                              staticClass: "fa fa-check",
+                                            }),
+                                          ]),
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                option.label || option.value
+                                              ) +
+                                              "\n            "
+                                          ),
+                                        ]
+                                      ),
+                                    ]
+                                  )
+                                }
+                              )
                             : _vm._e(),
                           _vm._v(" "),
                           _vm.options && _vm.type === "dropdown"
@@ -2177,7 +2188,7 @@ var render = function() {
                                   "label",
                                   {
                                     staticClass: "select-proxy-display",
-                                    attrs: { for: _vm.fieldName }
+                                    attrs: { for: _vm.fieldName },
                                   },
                                   [
                                     _c(
@@ -2188,64 +2199,65 @@ var render = function() {
                                             name: "model",
                                             rawName: "v-model",
                                             value: _vm.value,
-                                            expression: "value"
-                                          }
+                                            expression: "value",
+                                          },
                                         ],
                                         staticClass:
                                           "hidden-select form-control",
                                         attrs: { id: _vm.fieldName },
                                         on: {
-                                          change: function($event) {
-                                            var $$selectedVal = Array.prototype.filter
-                                              .call(
-                                                $event.target.options,
-                                                function(o) {
-                                                  return o.selected
-                                                }
-                                              )
-                                              .map(function(o) {
-                                                var val =
-                                                  "_value" in o
-                                                    ? o._value
-                                                    : o.value
-                                                return val
-                                              })
+                                          change: function ($event) {
+                                            var $$selectedVal =
+                                              Array.prototype.filter
+                                                .call(
+                                                  $event.target.options,
+                                                  function (o) {
+                                                    return o.selected
+                                                  }
+                                                )
+                                                .map(function (o) {
+                                                  var val =
+                                                    "_value" in o
+                                                      ? o._value
+                                                      : o.value
+                                                  return val
+                                                })
                                             _vm.value = $event.target.multiple
                                               ? $$selectedVal
                                               : $$selectedVal[0]
-                                          }
-                                        }
+                                          },
+                                        },
                                       },
                                       [
                                         _c("option", { attrs: { value: "" } }, [
-                                          _vm._v("-- Select an option")
+                                          _vm._v("-- Select an option"),
                                         ]),
                                         _vm._v(" "),
-                                        _vm._l(_vm.options, function(option) {
+                                        _vm._l(_vm.options, function (option) {
                                           return _c(
                                             "option",
                                             {
                                               key: option.value,
-                                              domProps: { value: option.value }
+                                              domProps: { value: option.value },
                                             },
                                             [
                                               _vm._v(
                                                 _vm._s(
                                                   option.label || option.value
                                                 )
-                                              )
+                                              ),
                                             ]
                                           )
-                                        })
+                                        }),
                                       ],
                                       2
                                     ),
                                     _vm._v(" "),
                                     _c("span", {
-                                      staticClass: "icon fa fa-chevron-down"
-                                    })
+                                      staticClass: "icon fa fa-chevron-down",
+                                    }),
                                   ]
-                                )
+                                ),
                               ]
                             : _vm._e(),
                           _vm._v(" "),
@@ -2261,22 +2273,22 @@ var render = function() {
                                           name: "model",
                                           rawName: "v-model",
                                           value: _vm.value,
-                                          expression: "value"
-                                        }
+                                          expression: "value",
+                                        },
                                       ],
                                       attrs: {
                                         name: _vm.fieldName,
                                         id: _vm.fieldName,
                                         type: "checkbox",
-                                        value: "true"
+                                        value: "true",
                                       },
                                       domProps: {
                                         checked: Array.isArray(_vm.value)
                                           ? _vm._i(_vm.value, "true") > -1
-                                          : _vm.value
+                                          : _vm.value,
                                       },
                                       on: {
-                                        change: function($event) {
+                                        change: function ($event) {
                                           var $$a = _vm.value,
                                             $$el = $event.target,
                                             $$c = $$el.checked ? true : false
@@ -2295,8 +2307,8 @@ var render = function() {
                                           } else {
                                             _vm.value = $$c
                                           }
-                                        }
-                                      }
+                                        },
+                                      },
                                     }),
                                     _vm._v(" "),
                                     _c(
@@ -2305,18 +2317,18 @@ var render = function() {
                                       [
                                         _c("span", { staticClass: "check" }, [
                                           _c("i", {
-                                            staticClass: "fa fa-check"
-                                          })
+                                            staticClass: "fa fa-check",
+                                          }),
                                         ]),
                                         _vm._v(
                                           " " +
                                             _vm._s(_vm.toggleLabel) +
                                             "\n            "
-                                        )
+                                        ),
                                       ]
-                                    )
+                                    ),
                                   ]
-                                )
+                                ),
                               ]
                             : _vm._e(),
                           _vm._v(" "),
@@ -2324,9 +2336,9 @@ var render = function() {
                             ? [
                                 _vm.html
                                   ? _c("div", {
-                                      domProps: { innerHTML: _vm._s(_vm.html) }
+                                      domProps: { innerHTML: _vm._s(_vm.html) },
                                     })
-                                  : _vm._e()
+                                  : _vm._e(),
                               ]
                             : _vm._e(),
                           _vm._v(" "),
@@ -2339,11 +2351,11 @@ var render = function() {
                                     ? [
                                         _c("div", {
                                           domProps: {
-                                            innerHTML: _vm._s(_vm.providerHtml)
-                                          }
-                                        })
+                                            innerHTML: _vm._s(_vm.providerHtml),
+                                          },
+                                        }),
                                       ]
-                                    : _vm._e()
+                                    : _vm._e(),
                                 ],
                                 2
                               )
@@ -2353,8 +2365,8 @@ var render = function() {
                             ? _c("div", { staticClass: "help-block" }, [
                                 _c("div", {
                                   staticClass: "alert alert-warning",
-                                  domProps: { innerHTML: _vm._s(_vm.warning) }
-                                })
+                                  domProps: { innerHTML: _vm._s(_vm.warning) },
+                                }),
                               ])
                             : _vm._e(),
                           _vm._v(" "),
@@ -2364,20 +2376,20 @@ var render = function() {
                                   "div",
                                   { staticClass: "alert alert-danger" },
                                   [_vm._v(_vm._s(errors[0]))]
-                                )
+                                ),
                               ])
-                            : _vm._e()
+                            : _vm._e(),
                         ],
                         2
-                      )
-                    ]
+                      ),
+                    ],
               ],
               2
-            )
+            ),
           ]
-        }
-      }
-    ])
+        },
+      },
+    ]),
   })
 }
 var staticRenderFns = []
