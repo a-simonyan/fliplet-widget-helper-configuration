@@ -113,7 +113,7 @@
 
 <script>
 import bus from '../libs/bus';
-import { findAll, findOne, findChildren } from '../libs/lookups';
+import { findAll, findOne, findChildren, setFieldProperty } from '../libs/lookups';
 
 VeeValidate.extend('required', {
   validate(value) {
@@ -150,6 +150,7 @@ export default {
   data() {
     return {
       eventsBound: false,
+      provider: undefined,
       providerPromise: undefined,
       panelIsVisible: true,
       isFullScreenProvider: this.type === 'provider' && this.mode === 'full-screen',
@@ -263,6 +264,7 @@ export default {
     find: findAll,
     findOne: findOne,
     children: findChildren,
+    setFieldProperty: setFieldProperty,
     val(newValue) {
       if (typeof newValue !== 'undefined') {
         this.$set(this, 'value', newValue);
@@ -429,6 +431,9 @@ export default {
           : value
       });
 
+      // Set provider property against the field
+      this.setFieldProperty(this.name, 'provider', this.provider);
+
       this.providerPromise = new Promise((resolve) => {
         this.provider.then((result) => {
           let value;
@@ -447,6 +452,7 @@ export default {
             delete window.currentProvider;
             delete this.provider;
 
+            this.setFieldProperty(this.name, 'provider', null);
             this.providerPromise = undefined;
 
             Fliplet.Widget.resetSaveButtonLabel();
@@ -486,7 +492,7 @@ export default {
     if (this.ready) {
       const ready = new Function(this.ready)();
 
-      ready.call(this, this.$el, this.value);
+      ready.call(this, this.$el, this.value, this.provider);
     }
   }
 };
