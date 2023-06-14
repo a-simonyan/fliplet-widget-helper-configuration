@@ -2573,6 +2573,7 @@ VeeValidate.extend('required', {
   data: function data() {
     return {
       eventsBound: false,
+      provider: undefined,
       providerPromise: undefined,
       panelIsVisible: true,
       isFullScreenProvider: this.type === 'provider' && this.mode === 'full-screen',
@@ -2655,6 +2656,7 @@ VeeValidate.extend('required', {
     find: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["findAll"],
     findOne: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["findOne"],
     children: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["findChildren"],
+    setFieldProperty: _libs_lookups__WEBPACK_IMPORTED_MODULE_4__["setFieldProperty"],
     val: function val(newValue) {
       if (typeof newValue !== 'undefined') {
         this.$set(this, 'value', newValue);
@@ -2843,7 +2845,9 @@ VeeValidate.extend('required', {
         selector: target ? target[0] : undefined,
         data: _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_1___default()(value) === 'object' // Normalize Vue objects into plain JSON objects
         ? JSON.parse(JSON.stringify(value)) : value
-      });
+      }); // Set provider property against the field
+
+      this.setFieldProperty(this.name, 'provider', this.provider);
       this.providerPromise = new Promise(function (resolve) {
         _this4.provider.then(function (result) {
           var value;
@@ -2859,6 +2863,9 @@ VeeValidate.extend('required', {
           if (_this4.isFullScreenProvider) {
             delete window.currentProvider;
             delete _this4.provider;
+
+            _this4.setFieldProperty(_this4.name, 'provider', null);
+
             _this4.providerPromise = undefined;
             Fliplet.Widget.resetSaveButtonLabel();
 
@@ -2897,7 +2904,7 @@ VeeValidate.extend('required', {
 
     if (this.ready) {
       var ready = new Function(this.ready)();
-      ready.call(this, this.$el, this.value);
+      ready.call(this, this.$el, this.value, this.provider);
     }
   }
 });
@@ -2912,6 +2919,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findOne", function() { return findOne; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findChildren", function() { return findChildren; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "registerFields", function() { return registerFields; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setFieldProperty", function() { return setFieldProperty; });
 var data = Fliplet.Widget.getData();
 
 var helperInstances = _.get(data, 'helperInstances', []);
@@ -2991,6 +2999,17 @@ function registerFields(fields) {
 
   fieldInstances = fields;
 }
+function setFieldProperty(fieldName, prop, value) {
+  var field = _.find(fieldInstances, {
+    name: fieldName
+  });
+
+  if (!field) {
+    return;
+  }
+
+  field[prop] = value;
+}
 /**
  * Finds matching helper instances
  * @param {Function} predicate The function invoked per iteration
@@ -3020,7 +3039,7 @@ Fliplet.Helper.field = function (name) {
     return;
   }
 
-  return {
+  var instance = {
     toggle: function toggle(show) {
       if (typeof field.show === 'undefined') {
         Vue.set(field, 'show', true);
@@ -3038,8 +3057,18 @@ Fliplet.Helper.field = function (name) {
     },
     set: function set(value) {
       field.value = value;
+
+      if (field.provider) {
+        field.provider.emit('set-data', value);
+      }
     }
   };
+
+  if (field.type === 'provider') {
+    instance.provider = field.provider;
+  }
+
+  return instance;
 };
 
 /***/ }),
