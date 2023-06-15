@@ -2834,7 +2834,9 @@ VeeValidate.extend('required', {
         };
       } else if (this["package"] === 'com.fliplet.data-source-provider') {
         // Apply default values to ensure data sources and security rules are correctly managed
-        value = _.assignIn({}, this["default"], value); // Data source provider wants a slightly different input from the original output
+        value = _.assignIn({
+          appId: Fliplet.Env.get('appId')
+        }, this["default"], value); // Data source provider wants a slightly different input from the original output
 
         if (value.id) {
           value.dataSourceId = value.id;
