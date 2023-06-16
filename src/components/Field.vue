@@ -184,6 +184,7 @@ export default {
     'options',
     'toggleLabel',
     'package',
+    'onEvent',
     'fields',
     'addLabel',
     'index',
@@ -423,12 +424,19 @@ export default {
         }
       }
 
+      let onEvent;
+
+      if (this.onEvent) {
+        onEvent = new Function(this.onEvent)();
+      }
+
       this.provider = Fliplet.Widget.open(this.package, {
         selector: target ? target[0] : undefined,
         data: typeof value === 'object'
           // Normalize Vue objects into plain JSON objects
           ? JSON.parse(JSON.stringify(value))
-          : value
+          : value,
+        onEvent: onEvent
       });
 
       // Set provider property against the field
