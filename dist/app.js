@@ -2589,7 +2589,7 @@ VeeValidate.extend('required', {
       }
     };
   },
-  props: ['type', 'name', 'listName', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'toggleLabel', 'package', 'fields', 'addLabel', 'index', 'mode', 'show', 'headingFieldName', 'emptyListPlaceholderHtml', 'rules', 'validate'],
+  props: ['type', 'name', 'listName', 'label', 'html', 'value', 'ready', 'change', 'warning', 'placeholder', 'default', 'description', 'required', 'rows', 'options', 'toggleLabel', 'package', 'onEvent', 'fields', 'addLabel', 'index', 'mode', 'show', 'headingFieldName', 'emptyListPlaceholderHtml', 'rules', 'validate'],
   computed: {
     providerHtml: function providerHtml() {
       return Handlebars.compile(this.html)(this);
@@ -2843,10 +2843,17 @@ VeeValidate.extend('required', {
         }
       }
 
+      var onEvent;
+
+      if (this.onEvent) {
+        onEvent = new Function(this.onEvent)();
+      }
+
       this.provider = Fliplet.Widget.open(this["package"], {
         selector: target ? target[0] : undefined,
         data: _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_1___default()(value) === 'object' // Normalize Vue objects into plain JSON objects
-        ? JSON.parse(JSON.stringify(value)) : value
+        ? JSON.parse(JSON.stringify(value)) : value,
+        onEvent: onEvent
       }); // Set provider property against the field
 
       this.setFieldProperty(this.name, 'provider', this.provider);
