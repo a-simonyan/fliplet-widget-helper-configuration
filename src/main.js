@@ -90,8 +90,11 @@ if (Fliplet.Env.get('development')) {
   };
 }
 
-(function() {
-  const data = Fliplet.Widget.getData();
+const data = Fliplet.Widget.getData();
+
+data.fields = data.fields || {};
+
+function initializeInterface() {
   const fields = _.get(data, 'configuration.fields', []);
 
   if (!fields.length) {
@@ -101,7 +104,9 @@ if (Fliplet.Env.get('development')) {
   }
 
   if (data.configuration && data.configuration.beforeReady) {
-    var beforeReady = new Function(data.configuration.beforeReady)();
+    var beforeReady = typeof data.configuration.beforeReady === 'function'
+      ? data.configuration.beforeReady
+      : new Function(data.configuration.beforeReady)();
 
     if (beforeReady) {
       try {
@@ -114,7 +119,7 @@ if (Fliplet.Env.get('development')) {
   }
 
   fields.forEach((field) => {
-    field.value = _.get(data.fields, field.name, field.default);
+    field.value = _.get(data, field.name, field.default);
 
     if (field.type === 'list') {
       if (field.value && field.value.length) {
@@ -160,10 +165,31 @@ if (Fliplet.Env.get('development')) {
     }
   });
 
-  new Vue({
+  return (new Vue({
     el: '#helper-configuration',
     render: (createElement) => {
       return createElement(Application);
     }
-  });
+  }));
+}
+
+/**
+ * Manually initializes the interface.
+ * This can be called by a widget interface.js file
+ * @param {Object} configuration - The configuration object
+ * @returns {Vue} The vue instance of the interface
+ */
+Fliplet.Helper.generateConfigurationInterface = function(configuration) {
+  data.configuration = configuration;
+
+  return initializeInterface();
+};
+
+(function() {
+  // Do not initialize the UI when it's called from a widget instance
+  if (data.uuid) {
+    return;
+  }
+
+  return initializeInterface();
 })();

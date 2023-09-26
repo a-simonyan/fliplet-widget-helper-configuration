@@ -4,7 +4,7 @@
       <form ref="form" class="form-horizontal" v-on:submit.prevent="validate().then(onSubmit)">
         <header>
           <p>
-            {{ displayName || name }}
+            {{ widgetName || displayName || name }}
             <a v-if="supportUrl" :href="supportUrl" class="help-icon" target="_blank">
               <i class="fa fa-question-circle-o"></i>
             </a>
@@ -39,7 +39,10 @@ export default {
         fields: {},
         showSubmit: window.parent === window && Fliplet.Env.get('development')
       },
-      Fliplet.Widget.getData()
+      Fliplet.Widget.getData(),
+      {
+        widgetName: window.__widgetData[Fliplet.Widget.getData().id].name
+      }
     );
   },
   methods: {
@@ -89,7 +92,9 @@ export default {
       }));
 
       if (this.configuration.beforeSave) {
-        var beforeSaveFunction = new Function(this.configuration.beforeSave)();
+        var beforeSaveFunction = typeof this.configuration.beforeSave === 'function'
+          ? this.configuration.beforeSave
+          : new Function(this.configuration.beforeSave)();
 
         if (beforeSaveFunction) {
           try {
@@ -116,6 +121,17 @@ export default {
           data = JSON.parse(JSON.stringify(this.fields));
         } catch (e) {
           // Silent error
+        }
+
+        data = _.omit(data, [
+          'id', 'package', 'uuid', 'version'
+        ]);
+
+        if (this.uuid) {
+          // Save to widget instance settings data
+          return Fliplet.Widget.save(data).then(function() {
+            return Fliplet.Widget.complete();
+          });
         }
 
         Fliplet.Studio.emit('page-preview-send-event', {
@@ -152,7 +168,9 @@ export default {
     });
 
     if (this.configuration.ready) {
-      var ready = new Function(this.configuration.ready)();
+      var ready = typeof this.configuration.ready === 'function'
+        ? this.configuration.ready
+        : new Function(this.configuration.ready)();
 
       if (ready) {
         try {
