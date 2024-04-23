@@ -400,7 +400,11 @@ export default {
         this.$set(this, 'value', []);
       }
 
-      const item = _.cloneDeep(this.fields);
+      const item = _.map(this.fields, field => {
+        return Object.assign({}, field, {
+          value: field.default
+        });
+      });
 
       this.value.push(item);
 

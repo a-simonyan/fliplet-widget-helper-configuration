@@ -2373,7 +2373,11 @@ VeeValidate.extend('required', {
       if (!Array.isArray(this.value)) {
         this.$set(this, 'value', []);
       }
-      var item = _.cloneDeep(this.fields);
+      var item = _.map(this.fields, function (field) {
+        return Object.assign({}, field, {
+          value: field["default"]
+        });
+      });
       this.value.push(item);
       this.$nextTick(function () {
         _this2.toggleAccordionByIndex(_this2.value.length - 1);
