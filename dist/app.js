@@ -1793,26 +1793,39 @@ var render = function () {
                                         },
                                       },
                                       [
-                                        typeof _vm.placeholder === "string"
-                                          ? _c(
-                                              "option",
-                                              {
-                                                attrs: {
-                                                  value: "",
-                                                  disabled:
-                                                    _vm.required &&
-                                                    typeof _vm.placeholder ===
-                                                      "string",
-                                                },
-                                              },
-                                              [_vm._v(_vm._s(_vm.placeholder))]
-                                            )
-                                          : _vm.placeholder !== false
-                                          ? _c(
-                                              "option",
-                                              { attrs: { value: "" } },
-                                              [_vm._v("-- Select an option")]
-                                            )
+                                        !_vm.placeholderOption
+                                          ? [
+                                              typeof _vm.placeholder ===
+                                              "string"
+                                                ? _c(
+                                                    "option",
+                                                    {
+                                                      attrs: {
+                                                        value: "",
+                                                        disabled:
+                                                          _vm.required &&
+                                                          typeof _vm.placeholder ===
+                                                            "string",
+                                                      },
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(_vm.placeholder)
+                                                      ),
+                                                    ]
+                                                  )
+                                                : _vm.placeholder !== false
+                                                ? _c(
+                                                    "option",
+                                                    { attrs: { value: "" } },
+                                                    [
+                                                      _vm._v(
+                                                        "-- Select an option"
+                                                      ),
+                                                    ]
+                                                  )
+                                                : _vm._e(),
+                                            ]
                                           : _vm._e(),
                                         _vm._v(" "),
                                         _vm._l(_vm.options, function (option) {
@@ -2124,6 +2137,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -2216,6 +2231,11 @@ VeeValidate.extend('required', {
       if (this.listName) {
         return this.$parent.$parent.$parent;
       }
+    },
+    placeholderOption: function placeholderOption() {
+      return this.options.find(function (option) {
+        return option.value === "";
+      }) || null;
     }
   },
   watch: {

@@ -81,8 +81,10 @@
           <template v-if="options && type === 'dropdown'">
             <label :for="fieldName" class="select-proxy-display">
               <select :id="fieldName" class="hidden-select form-control" v-model="value">
-                <option value="" v-if="typeof placeholder === 'string'" :disabled="required && typeof placeholder === 'string'">{{ placeholder }}</option>
-                <option value="" v-else-if="placeholder !== false">-- Select an option</option>
+                <template v-if="!placeholderOption">
+                  <option value="" v-if="typeof placeholder === 'string'" :disabled="required && typeof placeholder === 'string'">{{ placeholder }}</option>
+                  <option value="" v-else-if="placeholder !== false">-- Select an option</option>
+                </template>
                 <option v-for="option in options" :key="option.value" :value="option.value">{{ option.label || option.value }}</option>
               </select>
               <span class="icon fa fa-chevron-down"></span>
@@ -244,6 +246,9 @@ export default {
       if (this.listName) {
         return this.$parent.$parent.$parent;
       }
+    },
+    placeholderOption() {
+      return this.options.find(option => option.value === "") || null;
     }
   },
   watch: {
