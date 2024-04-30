@@ -62,7 +62,9 @@
             <div v-bind:key="optionIndex" v-for="(option, optionIndex) in options" class="radio radio-icon">
               <input :name="fieldName" :id="fieldName + '_' + optionIndex" type="radio" :value="option.value" v-model="value">
               <label :for="fieldName + '_' + optionIndex">
-                <span class="check"><i class="fa fa-circle"></i></span> {{ option.label || option.value }}
+                <span class="check"><i class="fa fa-circle"></i></span>
+                <span v-if="option.label" v-html="option.label"></span>
+                <template v-else>{{ option.value }}</template>
               </label>
             </div>
           </template>
@@ -70,14 +72,19 @@
             <div v-bind:key="optionIndex" v-for="(option, optionIndex) in options" class="checkbox checkbox-icon">
               <input :name="fieldName" :id="fieldName + '_' + optionIndex" type="checkbox" :value="option.value" v-model="value">
               <label :for="fieldName + '_' + optionIndex">
-                <span class="check"><i class="fa fa-check"></i></span> {{ option.label || option.value }}
+                <span class="check"><i class="fa fa-check"></i></span>
+                <span v-if="option.label" v-html="option.label"></span>
+                <template v-else>{{ option.value }}</template>
               </label>
             </div>
           </template>
           <template v-if="options && type === 'dropdown'">
             <label :for="fieldName" class="select-proxy-display">
               <select :id="fieldName" class="hidden-select form-control" v-model="value">
-                <option value="">-- Select an option</option>
+                <template v-if="!placeholderOption">
+                  <option value="" v-if="typeof placeholder === 'string'" :disabled="required && typeof placeholder === 'string'">{{ placeholder }}</option>
+                  <option value="" v-else-if="placeholder !== false">-- Select an option</option>
+                </template>
                 <option v-for="option in options" :key="option.value" :value="option.value">{{ option.label || option.value }}</option>
               </select>
               <span class="icon fa fa-chevron-down"></span>
@@ -87,7 +94,7 @@
             <div class="checkbox checkbox-icon">
               <input :name="fieldName" :id="fieldName" type="checkbox" value="true" v-model="value">
               <label :for="fieldName">
-                <span class="check"><i class="fa fa-check"></i></span> {{ toggleLabel }}
+                <span class="check"><i class="fa fa-check"></i></span> <span v-html="toggleLabel"></span>
               </label>
             </div>
           </template>
@@ -193,7 +200,9 @@ export default {
     'headingFieldName',
     'emptyListPlaceholderHtml',
     'rules',
-    'validate'
+    'validate',
+    'data',
+    'beforeSave'
   ],
   computed: {
     providerHtml() {
@@ -232,15 +241,25 @@ export default {
       }
 
       return rules;
+    },
+    $parentList() {
+      if (this.listName) {
+        return this.$parent.$parent.$parent;
+      }
+    },
+    placeholderOption() {
+      return this.options.find(option => option.value === "") || null;
     }
   },
   watch: {
-    value(newValue) {
+    value(newValue, oldValue) {
       // This field is used in a list
       if (this.listName) {
-        _.find(this.$parent.$parent.$parent.value[this.index], { name: this.name }).value = newValue;
+        _.find(this.$parentList.value[this.index], { name: this.name }).value = newValue;
 
-        this.$parent.$parent.$parent.onListValueChanged(this.name);
+        this.$parentList.onListValueChanged(this.name);
+
+        this.onValueChange(newValue, oldValue);
 
         return;
       }
@@ -252,13 +271,7 @@ export default {
         this.$refs.provider.validate(newValue);
       }
 
-      if (this.change) {
-        const change = typeof this.change === 'function'
-          ? this.change
-          : new Function(this.change)();
-
-        change.call(this, newValue);
-      }
+      this.onValueChange(newValue, oldValue);
     }
   },
   methods: {
@@ -285,8 +298,19 @@ export default {
         this.$forceUpdate();
       }
     },
+    onValueChange(newValue, oldValue) {
+      if (!this.change) {
+        return;
+      }
+
+      const change = typeof this.change === 'function'
+        ? this.change
+        : new Function(this.change)();
+
+      change.call(this, newValue, oldValue);
+    },
     async onSubmit() {
-      if (this.$refs.fieldInstances) {
+      if (this.type === 'list' && this.$refs.fieldInstances) {
         await Promise.all(this.$refs.fieldInstances.map((field) => {
           return field.onSubmit().then((result) => {
             _.find(this.value[field.index], { name: field.name }).value = result;
@@ -297,6 +321,10 @@ export default {
           const obj = {};
 
           fields.forEach((field) => {
+            if (field.show === false) {
+              return;
+            }
+
             obj[field.name] = typeof field.value !== 'undefined' ? field.value : field.default;
           });
 
@@ -307,7 +335,7 @@ export default {
       }
 
       if (!this.providerPromise) {
-        return Promise.resolve(this.value);
+        return Promise.resolve(this.show !== false ? this.value: null);
       }
 
       this.provider.forwardSaveRequest();
@@ -325,10 +353,26 @@ export default {
     allAccordionsCollapsed($context) {
       return !$context.find(':not(.panel-group) .panel-heading .fa-chevron-down').length;
     },
-    onToggleAccordion(event) {
-      const $target = $(event.target).parent().find('.chevron');
+    toggleAccordionByIndex(index) {
+      this.toggleAccordion(this.$el.querySelectorAll('.panel-heading')[index]?.querySelector('.panel-title-text'));
+    },
+    scrollToAccordionByIndex(index) {
+      const $accordion = $(this.$el.querySelectorAll('.panel-heading')[index]);
+
+      if (!$accordion.length) {
+        return;
+      }
+
+      $('html, body').stop().animate({
+        scrollTop: $accordion.offset().top
+      }, {
+        duration: 200
+      });
+    },
+    toggleAccordion(target) {
+      const $target = $(target).parent().find('.chevron');
       const isExpanded = $target.hasClass('fa-chevron-down');
-      const $field = $(event.target).closest('.list-field');
+      const $field = $(target).closest('.list-field');
 
       // Close other items
       this.collapseAccordions($field);
@@ -337,7 +381,12 @@ export default {
         // Expand this item
         $target.closest('.panel').find('.panel-collapse').collapse('show');
         $target.addClass('fa-chevron-down').removeClass('fa-chevron-right');
+
+        this.scrollToAccordionByIndex($field.find('.panel-heading').index($target.closest('.panel-heading')));
       }
+    },
+    onToggleAccordion(event) {
+      this.toggleAccordion(event.target);
     },
     onToggleAccordions(event) {
       const $field = $(event.target).closest('.list-field');
@@ -356,9 +405,18 @@ export default {
         this.$set(this, 'value', []);
       }
 
-      const item = JSON.parse(JSON.stringify(this.fields));
+      const item = _.map(this.fields, field => {
+        return Object.assign({}, field, {
+          value: field.default
+        });
+      });
 
       this.value.push(item);
+
+      this.$nextTick(() => {
+        this.toggleAccordionByIndex(this.value.length - 1);
+        this.scrollToAccordionByIndex(this.value.length - 1);
+      });
     },
     onStart(event) {
       this.collapseAccordions($(event.target));
@@ -412,6 +470,9 @@ export default {
     },
     openProvider(target) {
       let value = this.value || {};
+      let data = typeof this.data === 'function'
+        ? this.data.bind(this).call(this, value)
+        : this.data;
 
       // File picker wants a slightly different input from the original output
       if (this.package === 'com.fliplet.file-picker' && Array.isArray(value)) {
@@ -429,16 +490,22 @@ export default {
       let onEvent;
 
       if (this.onEvent) {
-        onEvent = new Function(this.onEvent)();
+        onEvent = typeof this.onEvent === 'function'
+          ? this.onEvent
+          : new Function(this.onEvent)();
+      }
+
+      if (!('data' in this)) {
+        data = typeof value === 'object'
+          // Normalize Vue objects into plain JSON objects
+          ? JSON.parse(JSON.stringify(value))
+          : value;
       }
 
       this.provider = Fliplet.Widget.open(this.package, {
-        selector: target ? target[0] : undefined,
-        data: typeof value === 'object'
-          // Normalize Vue objects into plain JSON objects
-          ? JSON.parse(JSON.stringify(value))
-          : value,
-        onEvent: onEvent
+        selector: target?.[0],
+        data,
+        onEvent
       });
 
       // Set provider property against the field
@@ -456,21 +523,31 @@ export default {
             value = result.data;
           }
 
-          this.$set(this, 'value', value);
+          let beforeSave;
 
-          if (this.isFullScreenProvider) {
-            delete window.currentProvider;
-            delete this.provider;
-
-            this.setFieldProperty(this.name, 'provider', null);
-            this.providerPromise = undefined;
-
-            Fliplet.Widget.resetSaveButtonLabel();
-
-            this.initProvider();
+          if (typeof this.beforeSave === 'function') {
+            beforeSave = this.beforeSave.bind(this).call(this, value);
+          } else {
+            beforeSave = Promise.resolve(value);
           }
 
-          resolve(this.value);
+          Promise.resolve(beforeSave).then((result) => {
+            this.$set(this, 'value', result);
+
+            if (this.isFullScreenProvider) {
+              delete window.currentProvider;
+              delete this.provider;
+
+              this.setFieldProperty(this.name, 'provider', null);
+              this.providerPromise = undefined;
+
+              Fliplet.Widget.resetSaveButtonLabel();
+
+              this.initProvider();
+            }
+
+            resolve(this.show !== false ? this.value : undefined);
+          });
         });
       });
     },
@@ -490,13 +567,28 @@ export default {
     this.initProvider();
     this.normalizeOptions();
 
+    const waitForAccordion = new Promise(resolve => {
+      if (!this.listName) {
+        return resolve();
+      }
+
+      // Wait for accordion to be initialized
+      setTimeout(() => {
+        resolve();
+      }, 100);
+    });
+
     // Ensure model-less values are synced with the validation provider
     if (this.type === 'list') {
       this.$refs.provider.syncValue(this.value);
-    } else if (this.type === 'dropdown' && typeof this.value === 'undefined') {
-      this.value = '';
+    } else if (['dropdown', 'radio'].includes(this.type) && typeof this.value === 'undefined') {
+      return waitForAccordion.then(() => {
+        this.$set(this, 'value', this.default || '');
+      });
     } else if (this.type === 'checkbox' && !Array.isArray(this.value)) {
-      this.$set(this, 'value', _.compact([this.value]));
+      return waitForAccordion.then(() => {
+        this.$set(this, 'value', _.compact([this.value]));
+      });
     }
 
     if (this.ready) {
@@ -507,7 +599,10 @@ export default {
       ready.call(this, this.$el, this.value, this.provider);
     }
 
-    this.updateParentValue(this.value);
+    // This field is used in a list
+    if (!this.listName) {
+      this.updateParentValue(this.value);
+    }
   }
 };
 </script>
